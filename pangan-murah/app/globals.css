@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 1. Konfigurasi Variabel Warna & Dasar */
+:root {
+  --background: #020617;     /* Deep Navy (Slate 950) */
+  --foreground: #f8fafc;     /* Slate 50 */
+  --primary: #10b981;        /* Emerald 500 */
+  --primary-hover: #059669;  /* Emerald 600 */
+  --card-bg: #0f172a;        /* Slate 900 */
+  --border: rgba(255, 255, 255, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden; /* Mencegah scroll horizontal di HP */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 2. Custom Utilities (Kelas Tambahan) */
+@layer components {
+  /* Efek Kartu Glassmorphism */
+  .glass-card {
+    @apply bg-white/[0.03] border border-white/[0.05] backdrop-blur-md rounded-[2rem] transition-all duration-300;
+  }
+
+  .glass-card:hover {
+    @apply border-green-500/30 bg-white/[0.05] translate-y-[-4px] shadow-[0_20px_40px_-15px_rgba(16,185,129,0.1)];
+  }
+
+  /* Tombol Utama Premium */
+  .btn-primary {
+    @apply px-8 py-4 bg-green-600 text-white font-black rounded-2xl transition-all 
+           hover:bg-green-500 hover:scale-105 active:scale-95 shadow-xl shadow-green-900/20;
+  }
+
+  /* Teks Gradasi */
+  .text-gradient {
+    @apply bg-gradient-to-r from-emerald-400 via-green-500 to-teal-500 bg-clip-text text-transparent italic;
+  }
+}
+
+/* 3. Animasi Kustom */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* 4. Perbaikan Scrollbar (Agar terlihat modern di Chrome/Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
