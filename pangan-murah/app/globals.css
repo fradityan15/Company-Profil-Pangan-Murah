@@ -1,14 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* 1. Konfigurasi Variabel Warna & Dasar */
 :root {
-  --background: #020617;     /* Deep Navy (Slate 950) */
-  --foreground: #f8fafc;     /* Slate 50 */
-  --primary: #10b981;        /* Emerald 500 */
-  --primary-hover: #059669;  /* Emerald 600 */
-  --card-bg: #0f172a;        /* Slate 900 */
+  --background: #020617;     
+  --foreground: #f8fafc;     
+  --primary: #10b981;        
+  --primary-hover: #059669;  
+  --card-bg: #0f172a;        
   --border: rgba(255, 255, 255, 0.05);
 }
 
