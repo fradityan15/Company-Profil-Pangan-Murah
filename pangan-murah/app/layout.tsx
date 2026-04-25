@@ -20,34 +20,38 @@ export default function RootLayout({
         <nav className="sticky top-0 z-[100] w-full border-b border-white/10 bg-slate-950/95 backdrop-blur-xl">
           <div className="max-w-7xl mx-auto flex h-20 items-center justify-between gap-6 px-6">
             <Link href="/" className="text-2xl font-black tracking-tighter text-white transition-transform hover:scale-105">
-              Pangan<span className="text-emerald-400 italic">Murah</span>
+              Pangan<span className="text-amber-400 italic">Murah</span>
             </Link>
 
             <div className="hidden md:flex items-center gap-8 text-sm uppercase tracking-[0.22em] text-slate-300">
-              <Link href="/" className="transition-colors hover:text-emerald-400">Home</Link>
-              <Link href="/about" className="transition-colors hover:text-emerald-400">About</Link>
-              <Link href="/live-data" className="inline-flex items-center gap-2 transition-colors hover:text-emerald-400">
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                Live Data
+              <Link href="/" className="transition-colors hover:text-amber-400">Home</Link>
+              <Link href="/about" className="transition-colors hover:text-amber-400">About</Link>
+              <Link href="/service" className="transition-colors hover:text-amber-400">Service</Link>
+              <Link href="/live-data" className="inline-flex items-center gap-2 transition-colors hover:text-amber-400">
+                <span className="h-2.5 w-2.5 rounded-full bg-amber-400 animate-pulse" />
+                Katalog
               </Link>
+              <Link href="/contact" className="transition-colors hover:text-amber-400">Contact</Link>
             </div>
 
             <div className="hidden md:block">
-              <Link href="/map" className="rounded-full bg-emerald-500 px-6 py-2.5 text-sm font-black text-slate-950 transition hover:bg-emerald-400 hover:shadow-[0_0_18px_rgba(16,185,129,0.35)]">
+              <Link href="/map" className="rounded-full bg-amber-500 px-6 py-2.5 text-sm font-black text-slate-950 transition hover:bg-amber-400 hover:shadow-[0_0_18px_rgba(245,158,11,0.35)]">
                 Cari Lokasi
               </Link>
             </div>
 
             <div className="md:hidden">
               <details className="rounded-3xl border border-white/10 bg-slate-950/90 p-3 shadow-xl shadow-black/20">
-                <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm uppercase tracking-[0.22em] text-emerald-300">
+                <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm uppercase tracking-[0.22em] text-amber-300">
                   Menu <span className="text-xl">☰</span>
                 </summary>
                 <div className="mt-3 flex flex-col gap-2 text-slate-200">
                   <Link href="/" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">Home</Link>
                   <Link href="/about" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">About</Link>
-                  <Link href="/live-data" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">Live Data</Link>
-                  <Link href="/map" className="rounded-2xl bg-emerald-500 px-4 py-3 text-slate-950 font-black transition hover:bg-emerald-400">Cari Lokasi</Link>
+                  <Link href="/service" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">Service</Link>
+                  <Link href="/live-data" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">Katalog</Link>
+                  <Link href="/contact" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">Contact</Link>
+                  <Link href="/map" className="rounded-2xl bg-amber-500 px-4 py-3 text-slate-950 font-black transition hover:bg-amber-400">Cari Lokasi</Link>
                 </div>
               </details>
             </div>
@@ -63,7 +67,7 @@ export default function RootLayout({
         <footer className="border-t border-white/5 bg-[#010409] py-16">
           <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
             <div>
-              <div className="text-2xl font-black mb-6">Pangan<span className="text-emerald-500">Murah</span></div>
+              <div className="text-2xl font-black mb-6">Pangan<span className="text-amber-500">Murah</span></div>
               <p className="text-sm text-slate-500 leading-relaxed max-w-xs">
                 Membantu warga Cipatat mendapatkan makanan berkualitas dengan harga hemat sambil mengurangi limbah lingkungan.
               </p>
@@ -71,22 +75,18 @@ export default function RootLayout({
             
             <div className="flex flex-col gap-4">
               <h4 className="font-black text-white text-xs uppercase tracking-[0.2em] mb-2">Navigasi Jalur Cepat</h4>
-              <Link href="/about" className="text-sm text-slate-500 hover:text-emerald-400 transition">Tentang Gerakan Kami</Link>
-              <Link href="/live-data" className="text-sm text-slate-500 hover:text-emerald-400 transition">Katalog Pangan Live</Link>
-              <Link href="/map" className="text-sm text-slate-500 hover:text-emerald-400 transition">Peta Mitra Terdekat</Link>
+              <Link href="/about" className="text-sm text-slate-500 hover:text-amber-400 transition">Tentang Gerakan Kami</Link>
+              <Link href="/service" className="text-sm text-slate-500 hover:text-amber-400 transition">Layanan Kami</Link>
+              <Link href="/live-data" className="text-sm text-slate-500 hover:text-amber-400 transition">Katalog</Link>
+              <Link href="/map" className="text-sm text-slate-500 hover:text-amber-400 transition">Peta Mitra Terdekat</Link>
             </div>
 
             <div className="flex flex-col gap-4">
               <h4 className="font-black text-white text-xs uppercase tracking-[0.2em] mb-2">Hubungi Kami</h4>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Jl. Raya Cipatat, Kab. Bandung Barat<br />
+                Bandung<br />
                 Jawa Barat, Indonesia
               </p>
-              <div className="flex gap-4 mt-2">
-                {/* Placeholder icon social media */}
-                <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 hover:border-emerald-500/50 transition cursor-pointer"></div>
-                <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 hover:border-emerald-500/50 transition cursor-pointer"></div>
-              </div>
             </div>
           </div>
 

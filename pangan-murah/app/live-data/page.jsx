@@ -29,9 +29,6 @@ export default async function LiveData() {
         {/* Header Halaman */}
         <div className="mb-12 animate-fade-in">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <span className="h-3 w-3 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-xs uppercase tracking-[0.35em] text-slate-500">Live Update</span>
-            <span className="h-3 w-3 rounded-full bg-emerald-400 animate-pulse"></span>
           </div>
           <h1 className="text-4xl md:text-6xl font-black text-white mb-4 text-center">
             Katalog <span className="text-gradient animate-pulse">Langsung.</span>
@@ -44,7 +41,7 @@ export default async function LiveData() {
         {/* Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-3 mb-12 animate-fade-in" style={{animationDelay: '0.2s'}}>
           {['Semua', 'Bakery', 'Restaurant', 'Fresh', 'Snacks'].map((filter) => (
-            <button key={filter} className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm font-medium hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all duration-300 hover:scale-105">
+            <button key={filter} className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm font-medium hover:bg-amber-500/20 hover:border-amber-500/50 transition-all duration-300 hover:scale-105">
               {filter}
             </button>
           ))}
@@ -53,9 +50,9 @@ export default async function LiveData() {
         {/* Grid Kartu Makanan */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {foodItems.map((item, index) => (
-            <div key={item.id} className="group glass-card p-8 rounded-[2.5rem] border border-white/5 hover:border-emerald-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl animate-fade-in" style={{animationDelay: `${0.4 + index * 0.1}s`}}>
+            <div key={item.id} className="group glass-card p-8 rounded-[2.5rem] border border-white/5 hover:border-amber-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl animate-fade-in" style={{animationDelay: `${0.4 + index * 0.1}s`}}>
               <div className="flex justify-between items-start mb-6">
-                <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-500 text-2xl group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-500 text-2xl group-hover:scale-110 transition-transform duration-300`}>
                   {item.icon}
                 </div>
                 <div className="text-right">
@@ -67,7 +64,7 @@ export default async function LiveData() {
               </div>
 
               {/* Judul & Deskripsi */}
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors duration-300 capitalize">
+              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-amber-400 transition-colors duration-300 capitalize">
                 {item.name}
               </h3>
               <p className="text-sm text-slate-400 leading-relaxed mb-6 group-hover:text-slate-300 transition-colors duration-300">
@@ -77,10 +74,10 @@ export default async function LiveData() {
               {/* Price & Button */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-lg font-black text-emerald-400">{item.price}</p>
+                  <p className="text-lg font-black text-amber-400">{item.price}</p>
                   <p className="text-xs text-slate-500 line-through">Rp 50.000</p>
                 </div>
-                <button className="px-6 py-3 bg-emerald-500 text-slate-950 font-black rounded-2xl hover:bg-emerald-400 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/25">
+                <button className="px-6 py-3 bg-amber-500 text-slate-950 font-black rounded-2xl hover:bg-amber-400 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-amber-500/25">
                   Ambil
                 </button>
               </div>
@@ -88,7 +85,7 @@ export default async function LiveData() {
               {/* Stock Indicator */}
               <div className="mt-4 flex items-center gap-2">
                 <div className="flex-1 bg-slate-700 rounded-full h-2">
-                  <div className="bg-emerald-500 h-2 rounded-full w-3/4"></div>
+                  <div className="bg-amber-500 h-2 rounded-full w-3/4"></div>
                 </div>
                 <span className="text-xs text-slate-400">75% tersisa</span>
               </div>
@@ -98,7 +95,7 @@ export default async function LiveData() {
 
         {/* Load More Button */}
         <div className="mt-16 text-center animate-fade-in" style={{animationDelay: '1.0s'}}>
-          <button className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all duration-300 hover:scale-105">
+          <button className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold hover:bg-amber-500/20 hover:border-amber-500/50 transition-all duration-300 hover:scale-105">
             Muat Lebih Banyak 📦
           </button>
         </div>

@@ -42,7 +42,102 @@
   }
 }
 
-/* 3. Global Styles */
+/* 3. Pop-in Animations */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes popInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes popInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(30px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes popInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes popInBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-pop-in {
+  animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+.animate-pop-in-left {
+  animation: popInLeft 0.5s ease-out forwards;
+}
+
+.animate-pop-in-right {
+  animation: popInRight 0.5s ease-out forwards;
+}
+
+.animate-pop-in-up {
+  animation: popInUp 0.4s ease-out forwards;
+}
+
+.animate-pop-in-bounce {
+  animation: popInBounce 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* Staggered pop-in animations */
+.animate-pop-in-delay-1 { animation-delay: 0.1s; }
+.animate-pop-in-delay-2 { animation-delay: 0.2s; }
+.animate-pop-in-delay-3 { animation-delay: 0.3s; }
+.animate-pop-in-delay-4 { animation-delay: 0.4s; }
+.animate-pop-in-delay-5 { animation-delay: 0.5s; }
+.animate-pop-in-delay-6 { animation-delay: 0.6s; }
+
+/* 4. Global Styles */
 @layer base {
   body {
     background-color: var(--color-navy-deep);
