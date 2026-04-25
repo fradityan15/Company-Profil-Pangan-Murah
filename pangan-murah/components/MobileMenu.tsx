@@ -28,12 +28,12 @@ export default function MobileMenu() {
             </button>
           </div>
           <div className="flex flex-col gap-2 text-slate-200">
-            <Link href="/" className="rounded-2xl px-4 py-3 transition hover:bg-cyan-500" onClick={() => setIsOpen(false)}>Home</Link>
-            <Link href="/about" className="rounded-2xl px-4 py-3 transition hover:bg-cyan-500" onClick={() => setIsOpen(false)}>About</Link>
-            <Link href="/service" className="rounded-2xl px-4 py-3 transition hover:bg-cyan-500" onClick={() => setIsOpen(false)}>Service</Link>
-            <Link href="/live-data" className="rounded-2xl px-4 py-3 transition hover:bg-cyan-500" onClick={() => setIsOpen(false)}>Katalog</Link>
-            <Link href="/contact" className="rounded-2xl px-4 py-3 transition hover:bg-cyan-500" onClick={() => setIsOpen(false)}>Contact</Link>
-            <Link href="/map" className="rounded-2xl px-4 py-3 transition hover:bg-cyan-500" onClick={() => setIsOpen(false)}>Cari Lokasi</Link>
+            <Link href="/" className="rounded-2xl px-4 py-3 transition hover:bg-amber-500" onClick={() => setIsOpen(false)}>Home</Link>
+            <Link href="/about" className="rounded-2xl px-4 py-3 transition hover:bg-amber-500" onClick={() => setIsOpen(false)}>About</Link>
+            <Link href="/service" className="rounded-2xl px-4 py-3 transition hover:bg-amber-500" onClick={() => setIsOpen(false)}>Service</Link>
+            <Link href="/live-data" className="rounded-2xl px-4 py-3 transition hover:bg-amber-500" onClick={() => setIsOpen(false)}>Katalog</Link>
+            <Link href="/contact" className="rounded-2xl px-4 py-3 transition hover:bg-amber-500" onClick={() => setIsOpen(false)}>Contact</Link>
+            <Link href="/map" className="rounded-2xl px-4 py-3 transition hover:bg-amber-500" onClick={() => setIsOpen(false)}>Cari Lokasi</Link>
           </div>
         </div>
       )}
