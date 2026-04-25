@@ -9,7 +9,7 @@ export default function MapPage() {
         <div className="flex justify-between items-center mb-10 animate-fade-in">
           <div>
             <h1 className="text-3xl md:text-5xl font-black text-white mb-2">
-              Peta <span className="text-gradient animate-pulse">Penyelamatan</span>
+              Peta <span className="text-gradient text-amber-400 animate-pulse">Penyelamatan</span>
             </h1>
             <p className="text-slate-400">Temukan titik penyelamatan makanan terdekat</p>
           </div>
@@ -54,7 +54,7 @@ export default function MapPage() {
               <div key={index} className="glass-card p-6 rounded-2xl hover:border-amber-500/50 transition-all duration-300 hover:scale-105 cursor-pointer group animate-fade-in" style={{animationDelay: `${0.6 + index * 0.2}s`}}>
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-xl flex items-center justify-center text-lg group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-10 h-10 bg-gradient-to-br from-slate-500 to-slate-500 rounded-xl flex items-center justify-center text-lg group-hover:scale-110 transition-transform duration-300">
                       {shop.icon}
                     </div>
                     <div>
@@ -103,7 +103,7 @@ export default function MapPage() {
           ].map((action, index) => (
             <div key={action.title} className="glass-card p-6 rounded-2xl hover:border-amber-500/30 transition-all duration-300 hover:scale-105 cursor-pointer group animate-fade-in" style={{animationDelay: `${1.6 + index * 0.2}s`}}>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
+                <div className="w-12 h-12 bg-gradient-to-br from-slate-500 to-amber-500 rounded-2xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
                   {action.icon}
                 </div>
                 <div className="flex-1">
