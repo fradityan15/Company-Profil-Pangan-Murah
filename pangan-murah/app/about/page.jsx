@@ -21,8 +21,8 @@ export default function About() {
               <Link href="/map" className="inline-flex items-center justify-center rounded-full bg-amber-500 px-10 py-4 text-base font-black text-slate-950 transition-all duration-300 hover:bg-amber-400 hover:scale-105">
                 Lihat Mitra
               </Link>
-              <Link href="/live-data" className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900/80 px-10 py-4 text-base font-black text-slate-100 transition-all duration-300 hover:border-amber-400 hover:text-amber-300 hover:bg-amber-500/10 hover:scale-105">
-                Lihat Data Live
+              <Link href="/live-data" className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900/80 px-10 py-4 text-base font-black text-slate-100 transition-all duration-300 hover:border-slate-500 hover:text-slate-300 hover:bg-slate-500/10 hover:scale-105">
+                Lihat Katalog
               </Link>
             </div>
           </div>

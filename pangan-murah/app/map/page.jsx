@@ -42,23 +42,23 @@ export default function MapPage() {
           {/* Daftar Toko Terdekat */}
           <div className="space-y-4 animate-fade-in" style={{animationDelay: '0.4s'}}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-slate-400 uppercase tracking-widest text-xs">Tersedia Sekarang</h3>
-              <span className="text-xs text-amber-400 bg-amber-500/10 px-2 py-1 rounded-full">3 lokasi</span>
+              <h3 className="font-bold text-white uppercase tracking-widest text-xs">Tersedia Sekarang</h3>
+              <span className="text-xs text-white bg-yellow-500/10 px-2 py-1 rounded-full">3 lokasi</span>
             </div>
 
             {[
-              { name: 'Bakery Indah', dist: '0.8 km', stock: '5 Bag', rating: 4.8, time: 'Buka sampai 20:00', icon: '🥖' },
+              { name: 'Cafe Kojo', dist: '0.8 km', stock: '5 Bag', rating: 4.8, time: 'Buka sampai 20:00', icon: '🥖' },
               { name: 'Warung Barokah', dist: '1.2 km', stock: '2 Porsi', rating: 4.6, time: 'Buka sampai 22:00', icon: '🍜' },
-              { name: 'Fruit Fresh', dist: '2.5 km', stock: '8 Pack', rating: 4.9, time: 'Buka sampai 18:00', icon: '🍎' },
+              { name: 'Toko Fresh', dist: '2.5 km', stock: '8 Pack', rating: 4.9, time: 'Buka sampai 18:00', icon: '🍎' },
             ].map((shop, index) => (
-              <div key={index} className="glass-card p-6 rounded-2xl hover:border-amber-500/50 transition-all duration-300 hover:scale-105 cursor-pointer group animate-fade-in" style={{animationDelay: `${0.6 + index * 0.2}s`}}>
+              <div key={index} className="glass-card p-6 rounded-2xl hover:border-slate-500/50 transition-all duration-300 hover:scale-105 cursor-pointer group animate-fade-in" style={{animationDelay: `${0.6 + index * 0.2}s`}}>
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-slate-500 to-slate-500 rounded-xl flex items-center justify-center text-lg group-hover:scale-110 transition-transform duration-300">
                       {shop.icon}
                     </div>
                     <div>
-                      <h4 className="font-bold text-white group-hover:text-amber-400 transition-colors duration-300">{shop.name}</h4>
+                      <h4 className="font-bold text-white group-hover:text-slate-400 transition-colors duration-300">{shop.name}</h4>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-xs text-slate-500">⭐ {shop.rating}</span>
                         <span className="text-xs text-slate-600">•</span>
@@ -101,13 +101,13 @@ export default function MapPage() {
             { title: 'Lokasi Saya', desc: 'Update posisi GPS Anda', icon: '📱', action: 'Update' },
             { title: 'Riwayat', desc: 'Lihat penjemputan sebelumnya', icon: '📋', action: 'Lihat' },
           ].map((action, index) => (
-            <div key={action.title} className="glass-card p-6 rounded-2xl hover:border-amber-500/30 transition-all duration-300 hover:scale-105 cursor-pointer group animate-fade-in" style={{animationDelay: `${1.6 + index * 0.2}s`}}>
+            <div key={action.title} className="glass-card p-6 rounded-2xl hover:border-slate-500/30 transition-all duration-300 hover:scale-105 cursor-pointer group animate-fade-in" style={{animationDelay: `${1.6 + index * 0.2}s`}}>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-slate-500 to-amber-500 rounded-2xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
+                <div className="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-500 rounded-2xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
                   {action.icon}
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-bold text-white mb-1 group-hover:text-amber-400 transition-colors duration-300">{action.title}</h4>
+                  <h4 className="font-bold text-white mb-1 group-hover:text-slate-400 transition-colors duration-300">{action.title}</h4>
                   <p className="text-xs text-slate-400 mb-2">{action.desc}</p>
                   <button className="text-xs text-amber-400 hover:text-amber-300 transition-colors duration-300 font-medium">
                     {action.action} →

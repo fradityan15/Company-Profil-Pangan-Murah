@@ -21,7 +21,7 @@ export default function Service() {
               <Link href="/live-data" className="inline-flex items-center justify-center rounded-full bg-amber-500 px-10 py-4 text-base font-black text-slate-950 transition-all duration-300 hover:bg-amber-400 hover:scale-105">
                 Jelajahi Katalog
               </Link>
-              <Link href="/map" className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900/80 px-10 py-4 text-base font-black text-slate-100 transition-all duration-300 hover:border-amber-400 hover:text-amber-300 hover:bg-amber-500/10 hover:scale-105">
+              <Link href="/map" className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900/80 px-10 py-4 text-base font-black text-slate-100 transition-all duration-300 hover:border-slate-400 hover:text-slate-300 hover:bg-slate-500/10 hover:scale-105">
                 Cari Lokasi
               </Link>
             </div>
@@ -56,7 +56,7 @@ export default function Service() {
             { title: 'Logistik & Distribusi', desc: 'Sistem pengiriman efisien untuk memastikan makanan sampai dalam kondisi prima ke pelanggan.', icon: '🚚', features: ['Pengiriman Cepat', 'Tracking Real-time', 'Packaging Aman'] },
           ].map((item, index) => (
             <div key={item.title} className={`glass-card rounded-4xl border border-white/10 bg-white/5 p-10 shadow-xl shadow-slate-950/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl animate-pop-in animate-pop-in-delay-${index + 1}`}>
-              <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-linear-to-br from-amber-500 to-cyan-500 text-2xl text-white mb-6 animate-pop-in-bounce" style={{animationDelay: `${0.2 + index * 0.1}s`}}>
+              <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-linear-to-br from-cyan-500 to-cyan-500 text-2xl text-white mb-6 animate-pop-in-bounce" style={{animationDelay: `${0.2 + index * 0.1}s`}}>
                 {item.icon}
               </div>
               <h3 className="text-2xl font-bold text-white mb-3 animate-pop-in-up" style={{animationDelay: `${0.3 + index * 0.1}s`}}>{item.title}</h3>

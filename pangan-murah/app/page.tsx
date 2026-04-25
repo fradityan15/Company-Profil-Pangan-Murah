@@ -21,10 +21,10 @@ export default function Home() {
           </p>
 
           <div className="mt-12 flex flex-col items-center gap-5 sm:flex-row sm:justify-center animate-pop-in animate-pop-in-delay-3">
-            <Link href="/map" className="inline-flex items-center justify-center rounded-full bg-amber-500 px-10 py-5 text-base font-black text-slate-950 transition-all duration-300 hover:bg-amber-400 hover:shadow-[0_20px_60px_-30px_rgba(245,158,11,0.8)] hover:scale-105 active:scale-95">
+            <Link href="/map" className="inline-flex items-center justify-center rounded-full bg-slate-500 px-10 py-5 text-base font-black text-slate-950 transition-all duration-300 hover:bg-slate-400 hover:shadow-[0_20px_60px_-30px_rgba(245,158,11,0.8)] hover:scale-105 active:scale-95">
               🚀 Mulai Berburu Makanan
             </Link>
-            <Link href="/live-data" className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900/80 px-10 py-5 text-base font-black text-slate-100 transition-all duration-300 hover:border-amber-400 hover:text-amber-300 hover:bg-amber-500/10 hover:scale-105">
+            <Link href="/live-data" className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900/80 px-10 py-5 text-base font-black text-slate-100 transition-all duration-300 hover:border-slate-500 hover:text-slate-300 hover:bg-slate-500/10 hover:scale-105">
               📊 Lihat Katalog
             </Link>
           </div>
@@ -36,12 +36,12 @@ export default function Home() {
             { label: 'Porsi Resto', icon: '🍱', desc: 'Makanan berat dari resto dan warung dengan diskon besar.', color: 'from-orange-500 to-red-500' },
             { label: 'Bahan Segar', icon: '🥗', desc: 'Sayur, buah, dan bahan masak segar siap diolah.', color: 'from-green-500 to-emerald-500' },
           ].map((item, index) => (
-            <article key={item.label} className={`glass-card group flex flex-col gap-8 rounded-[2rem] border border-white/10 bg-white/5 p-10 shadow-xl shadow-slate-950/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-amber-500/30 hover:shadow-amber-500/10 animate-pop-in animate-pop-in-delay-${index + 4}`}>
+            <article key={item.label} className={`glass-card group flex flex-col gap-8 rounded-[2rem] border border-white/10 bg-white/5 p-10 shadow-xl shadow-slate-950/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-slate-500/30 hover:shadow-slate-500/10 animate-pop-in animate-pop-in-delay-${index + 4}`}>
               <div className={`flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br ${item.color} text-3xl shadow-inner group-hover:scale-110 transition-transform duration-300 animate-pop-in-bounce`} style={{animationDelay: `${0.8 + index * 0.2}s`}}>
                 {item.icon}
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white group-hover:text-amber-400 transition-colors duration-300 animate-pop-in-up" style={{animationDelay: `${1.0 + index * 0.2}s`}}>{item.label}</h3>
+                <h3 className="text-xl font-bold text-white group-hover:text-slate-400 transition-colors duration-300 animate-pop-in-up" style={{animationDelay: `${1.0 + index * 0.2}s`}}>{item.label}</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-400 group-hover:text-slate-300 transition-colors duration-300 animate-pop-in-up" style={{animationDelay: `${1.2 + index * 0.2}s`}}>{item.desc}</p>
               </div>
             </article>
@@ -75,7 +75,7 @@ export default function Home() {
           ].map((stat, index) => (
             <div key={stat.label} className={`text-center glass-card p-6 rounded-2xl hover:scale-105 transition-all duration-300 animate-pop-in animate-pop-in-delay-${index + 1}`}>
               <div className="text-2xl mb-2 animate-pop-in-bounce" style={{animationDelay: `${0.2 + index * 0.1}s`}}>{stat.icon}</div>
-              <div className="text-2xl font-black text-amber-400 mb-1 animate-pop-in-up" style={{animationDelay: `${0.3 + index * 0.1}s`}}>{stat.number}</div>
+              <div className="text-2xl font-black text-slate-400 mb-1 animate-pop-in-up" style={{animationDelay: `${0.3 + index * 0.1}s`}}>{stat.number}</div>
               <div className="text-xs text-slate-400 uppercase tracking-wider animate-pop-in-up" style={{animationDelay: `${0.4 + index * 0.1}s`}}>{stat.label}</div>
             </div>
           ))}
