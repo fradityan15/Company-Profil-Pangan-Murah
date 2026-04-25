@@ -1,6 +1,7 @@
 import './globals.css'
 import Link from 'next/link'
 import React from 'react'
+import MobileMenu from '../components/MobileMenu'
 
 export const metadata = {
   title: 'Pangan Murah | Penyelamat Makanan Indonesia',
@@ -40,21 +41,7 @@ export default function RootLayout({
               </Link>
             </div>
 
-            <div className="md:hidden">
-              <details className="rounded-3xl border border-white/10 bg-slate-950/90 p-3 shadow-xl shadow-black/20">
-                <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm uppercase tracking-[0.22em] text-amber-300">
-                  Menu <span className="text-xl">☰</span>
-                </summary>
-                <div className="mt-3 flex flex-col gap-2 text-slate-200">
-                  <Link href="/" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">Home</Link>
-                  <Link href="/about" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">About</Link>
-                  <Link href="/service" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">Service</Link>
-                  <Link href="/live-data" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">Katalog</Link>
-                  <Link href="/contact" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">Contact</Link>
-                  <Link href="/map" className="rounded-2xl bg-amber-500 px-4 py-3 text-slate-950 font-black transition hover:bg-amber-400">Cari Lokasi</Link>
-                </div>
-              </details>
-            </div>
+            <MobileMenu />
           </div>
         </nav>
 

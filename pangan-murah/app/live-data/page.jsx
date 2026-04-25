@@ -31,7 +31,7 @@ export default async function LiveData() {
           <div className="flex items-center justify-center gap-3 mb-4">
           </div>
           <h1 className="text-4xl md:text-6xl font-black text-white mb-4 text-center">
-            Katalog <span className="text-gradient animate-pulse">Langsung.</span>
+            Katalog
           </h1>
           <p className="text-slate-400 max-w-2xl leading-relaxed text-center mx-auto">
             Daftar di bawah ini adalah stok makanan surplus terbaru dari mitra Pangan Murah. Data diperbarui secara real-time setiap 5 menit.
