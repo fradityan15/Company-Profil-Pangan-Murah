@@ -17,29 +17,39 @@ export default function RootLayout({
       <body className="bg-[#020617] text-slate-200 font-sans min-h-screen flex flex-col antialiased">
         
         {/* --- GLOBAL HEADER --- */}
-        <nav className="sticky top-0 z-[100] w-full border-b border-white/5 bg-[#020617]/80 backdrop-blur-lg">
-          <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-            {/* Logo */}
-            <Link href="/" className="text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
-              Pangan<span className="text-emerald-500 italic">Murah</span>
+        <nav className="sticky top-0 z-[100] w-full border-b border-white/10 bg-slate-950/95 backdrop-blur-xl">
+          <div className="max-w-7xl mx-auto flex h-20 items-center justify-between gap-6 px-6">
+            <Link href="/" className="text-2xl font-black tracking-tighter text-white transition-transform hover:scale-105">
+              Pangan<span className="text-emerald-400 italic">Murah</span>
             </Link>
 
-            {/* Navigasi Desktop */}
-            <div className="hidden md:flex gap-10 items-center text-sm font-extrabold uppercase tracking-widest">
-              <Link href="/" className="hover:text-emerald-400 transition-colors">Home</Link>
-              <Link href="/about" className="hover:text-emerald-400 transition-colors">About</Link>
-              <Link href="/live-data" className="hover:text-emerald-400 transition-colors flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+            <div className="hidden md:flex items-center gap-8 text-sm uppercase tracking-[0.22em] text-slate-300">
+              <Link href="/" className="transition-colors hover:text-emerald-400">Home</Link>
+              <Link href="/about" className="transition-colors hover:text-emerald-400">About</Link>
+              <Link href="/live-data" className="inline-flex items-center gap-2 transition-colors hover:text-emerald-400">
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
                 Live Data
               </Link>
-              <Link href="/map" className="bg-emerald-600 px-6 py-2.5 rounded-xl text-white hover:bg-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all">
+            </div>
+
+            <div className="hidden md:block">
+              <Link href="/map" className="rounded-full bg-emerald-500 px-6 py-2.5 text-sm font-black text-slate-950 transition hover:bg-emerald-400 hover:shadow-[0_0_18px_rgba(16,185,129,0.35)]">
                 Cari Lokasi
               </Link>
             </div>
 
-            {/* Indikator Mobile (Opsional) */}
             <div className="md:hidden">
-               <span className="text-emerald-500">☰</span>
+              <details className="rounded-3xl border border-white/10 bg-slate-950/90 p-3 shadow-xl shadow-black/20">
+                <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm uppercase tracking-[0.22em] text-emerald-300">
+                  Menu <span className="text-xl">☰</span>
+                </summary>
+                <div className="mt-3 flex flex-col gap-2 text-slate-200">
+                  <Link href="/" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">Home</Link>
+                  <Link href="/about" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">About</Link>
+                  <Link href="/live-data" className="rounded-2xl px-4 py-3 transition hover:bg-white/5">Live Data</Link>
+                  <Link href="/map" className="rounded-2xl bg-emerald-500 px-4 py-3 text-slate-950 font-black transition hover:bg-emerald-400">Cari Lokasi</Link>
+                </div>
+              </details>
             </div>
           </div>
         </nav>

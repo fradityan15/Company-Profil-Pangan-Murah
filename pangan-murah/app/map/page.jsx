@@ -2,41 +2,120 @@ import Link from 'next/link';
 
 export default function MapPage() {
   return (
-    <div className="min-h-screen bg-[#0F172A] text-slate-200">
+    <div className="min-h-screen bg-[#0F172A] text-slate-200 font-sans">
       <main className="max-w-7xl mx-auto px-6 py-12">
-        <div className="flex justify-between items-center mb-10">
-          <h1 className="text-3xl font-black text-white">Peta <span className="text-green-500">Penyelamatan</span></h1>
-          <Link href="/" className="text-sm font-bold text-slate-500 hover:text-white">← Kembali</Link>
+
+        {/* Header */}
+        <div className="flex justify-between items-center mb-10 animate-fade-in">
+          <div>
+            <h1 className="text-3xl md:text-5xl font-black text-white mb-2">
+              Peta <span className="text-gradient animate-pulse">Penyelamatan</span>
+            </h1>
+            <p className="text-slate-400">Temukan titik penyelamatan makanan terdekat</p>
+          </div>
+          <Link href="/" className="text-sm font-bold text-slate-500 hover:text-white transition-colors hover:scale-105 inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10">
+            <span>←</span> Kembali
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
           {/* Simulasi Area Peta */}
-          <div className="lg:col-span-2 h-[500px] bg-[#1E293B] rounded-[2.5rem] border border-white/5 relative overflow-hidden flex items-center justify-center">
-             <div className="absolute inset-0 opacity-20 bg-[url('https://www.google.com/maps/vt/pb=!1m4!1m3!1i12!2i2456!3i1645!2m3!1e0!2sm!3i633140934!3m8!2sid!3sUS!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1f2!10b1!12b1')] bg-cover"></div>
-             <div className="relative z-10 text-center p-10">
-                <div className="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 animate-ping opacity-20 absolute left-1/2 -ml-8"></div>
-                <div className="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 relative flex items-center justify-center text-2xl">📍</div>
-                <p className="font-bold text-white">Mencari titik terdekat di Cipatat...</p>
+          <div className="lg:col-span-2 h-80 sm:h-[420px] glass-card rounded-[2.5rem] border border-white/5 relative overflow-hidden flex items-center justify-center animate-fade-in" style={{animationDelay: '0.2s'}}>
+             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(56,189,248,0.16),_transparent_30%)]"></div>
+             <div className="relative z-10 text-center p-8 sm:p-10">
+                <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl animate-bounce">
+                  📍
+                </div>
+                <p className="font-bold text-white text-lg sm:text-xl mb-2">Mencari titik terdekat...</p>
+                <p className="text-sm text-slate-400 max-w-md mx-auto mb-6">Sistem kami sedang memindai lokasi penyelamatan aktif di sekitar Anda</p>
+
+                {/* Loading Animation */}
+                <div className="flex justify-center gap-1">
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                </div>
              </div>
           </div>
 
           {/* Daftar Toko Terdekat */}
-          <div className="space-y-4">
-            <h3 className="font-bold text-slate-400 mb-4 uppercase tracking-widest text-xs">Tersedia Sekarang</h3>
+          <div className="space-y-4 animate-fade-in" style={{animationDelay: '0.4s'}}>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-bold text-slate-400 uppercase tracking-widest text-xs">Tersedia Sekarang</h3>
+              <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full">3 lokasi</span>
+            </div>
+
             {[
-              { name: 'Bakery Indah', dist: '0.8 km', stock: '5 Bag' },
-              { name: 'Warung Barokah', dist: '1.2 km', stock: '2 Porsi' },
-              { name: 'Fruit Fresh', dist: '2.5 km', stock: '8 Pack' },
-            ].map((shop, i) => (
-              <div key={i} className="p-6 bg-white/5 border border-white/5 rounded-2xl hover:border-green-500/50 transition-all cursor-pointer">
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-bold text-white">{shop.name}</h4>
-                  <span className="text-[10px] bg-green-500/20 text-green-500 px-2 py-1 rounded-md font-black">{shop.stock}</span>
+              { name: 'Bakery Indah', dist: '0.8 km', stock: '5 Bag', rating: 4.8, time: 'Buka sampai 20:00', icon: '🥖' },
+              { name: 'Warung Barokah', dist: '1.2 km', stock: '2 Porsi', rating: 4.6, time: 'Buka sampai 22:00', icon: '🍜' },
+              { name: 'Fruit Fresh', dist: '2.5 km', stock: '8 Pack', rating: 4.9, time: 'Buka sampai 18:00', icon: '🍎' },
+            ].map((shop, index) => (
+              <div key={index} className="glass-card p-6 rounded-2xl hover:border-emerald-500/50 transition-all duration-300 hover:scale-105 cursor-pointer group animate-fade-in" style={{animationDelay: `${0.6 + index * 0.2}s`}}>
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-500 rounded-xl flex items-center justify-center text-lg group-hover:scale-110 transition-transform duration-300">
+                      {shop.icon}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">{shop.name}</h4>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-slate-500">⭐ {shop.rating}</span>
+                        <span className="text-xs text-slate-600">•</span>
+                        <span className="text-xs text-slate-500">{shop.time}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded-md font-black uppercase tracking-widest">
+                    {shop.stock}
+                  </span>
                 </div>
-                <p className="text-xs text-slate-500">📍 {shop.dist} dari lokasimu</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-slate-500 flex items-center gap-1">
+                    <span className="text-emerald-400">📍</span> {shop.dist} dari lokasimu
+                  </p>
+                  <button className="text-xs bg-emerald-500 text-slate-950 px-3 py-1 rounded-full font-bold hover:bg-emerald-400 transition-colors duration-300">
+                    Arahkan
+                  </button>
+                </div>
               </div>
             ))}
+
+            {/* Search More */}
+            <div className="glass-card p-4 rounded-2xl border-dashed border-white/20 animate-fade-in" style={{animationDelay: '1.2s'}}>
+              <div className="text-center">
+                <div className="w-8 h-8 bg-white/10 rounded-full mx-auto mb-2 flex items-center justify-center text-sm">🔍</div>
+                <p className="text-xs text-slate-500">Cari lebih banyak lokasi</p>
+                <button className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors duration-300 mt-1">
+                  Perluas radius →
+                </button>
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in" style={{animationDelay: '1.4s'}}>
+          {[
+            { title: 'Filter Kategori', desc: 'Cari berdasarkan jenis makanan', icon: '🏷️', action: 'Filter' },
+            { title: 'Lokasi Saya', desc: 'Update posisi GPS Anda', icon: '📱', action: 'Update' },
+            { title: 'Riwayat', desc: 'Lihat penjemputan sebelumnya', icon: '📋', action: 'Lihat' },
+          ].map((action, index) => (
+            <div key={action.title} className="glass-card p-6 rounded-2xl hover:border-emerald-500/30 transition-all duration-300 hover:scale-105 cursor-pointer group animate-fade-in" style={{animationDelay: `${1.6 + index * 0.2}s`}}>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
+                  {action.icon}
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-white mb-1 group-hover:text-emerald-400 transition-colors duration-300">{action.title}</h4>
+                  <p className="text-xs text-slate-400 mb-2">{action.desc}</p>
+                  <button className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors duration-300 font-medium">
+                    {action.action} →
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </main>
     </div>

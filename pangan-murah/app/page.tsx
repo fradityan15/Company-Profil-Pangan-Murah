@@ -2,60 +2,88 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-[#0F172A] text-slate-200 overflow-x-hidden font-sans">
-      
-      {/* 1. Background Decor (Glow Effects) */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-green-500/10 blur-[120px] rounded-full z-0 pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full z-0 pointer-events-none"></div>
+    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100 font-sans">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.16),transparent_35%),radial-gradient(circle_at_top_right,_rgba(56,189,248,0.12),transparent_28%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_rgba(59,130,246,0.08),transparent_30%)]" />
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-32 flex flex-col items-center">
-        
-        {/* Badge Info - Update Lokasi Cipatat */}
-        <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 mb-10 backdrop-blur-sm shadow-xl">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+      <main className="relative z-10 mx-auto flex min-h-screen w-full max-w-full flex-col px-6 py-28 sm:px-10 lg:px-14 xl:px-20">
+        <div className="flex flex-col items-center text-center animate-fade-in space-y-10">
+          <span className="mb-8 inline-flex items-center gap-3 rounded-full border border-slate-700 bg-slate-900/70 px-5 py-3 text-xs uppercase tracking-[0.35em] text-slate-300 shadow-xl shadow-slate-950/20 backdrop-blur-sm">
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
+            12 titik penyelamatan baru di seluruh Indonesia
           </span>
-          <span className="text-[10px] font-black tracking-[0.2em] uppercase text-slate-400">12 Titik Penyelamatan Baru di Seluruh Indonesia</span>
-        </div>
 
-        {/* Hero Content */}
-        <section className="text-center mb-24">
-          <h1 className="text-6xl md:text-8xl font-black mb-8 leading-[1.1] tracking-tight text-white">
-            Makan Enak <br />
-            <span className="bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 bg-clip-text text-transparent italic">
+          <h1 className="max-w-4xl text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl leading-tight">
+            Makan Enak, <br />
+            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent animate-pulse">
               Hemat Kantong.
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Hentikan <span className="text-white font-semibold">food waste</span> hari ini. Temukan ribuan paket makanan surplus berkualitas dengan harga yang jauh lebih murah.
+          <p className="mt-8 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg animate-fade-in" style={{animationDelay: '0.2s'}}>
+            Temukan makanan surplus berkualitas dengan harga murah sambil membantu mengurangi limbah pangan. Aksi kecilmu berarti manfaat besar bagi komunitas dan lingkungan.
           </p>
 
-          <div className="flex flex-col md:flex-row gap-5 justify-center">
-            <Link href="/map" className="px-10 py-5 bg-green-600 rounded-2xl font-black text-white hover:bg-green-500 transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-green-900/30 text-center">
-              Mulai Berburu Makanan
+          <div className="mt-12 flex flex-col items-center gap-5 sm:flex-row sm:justify-center animate-fade-in" style={{animationDelay: '0.4s'}}>
+            <Link href="/map" className="inline-flex items-center justify-center rounded-full bg-emerald-500 px-10 py-5 text-base font-black text-slate-950 transition-all duration-300 hover:bg-emerald-400 hover:shadow-[0_20px_60px_-30px_rgba(16,185,129,0.8)] hover:scale-105 active:scale-95">
+              🚀 Mulai Berburu Makanan
             </Link>
-            <Link href="/live-data" className="px-10 py-5 bg-white/5 border border-white/10 rounded-2xl font-black text-white hover:bg-white/10 transition-all text-center">
-               Lihat Katalog Live
+            <Link href="/live-data" className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900/80 px-10 py-5 text-base font-black text-slate-100 transition-all duration-300 hover:border-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 hover:scale-105">
+              📊 Lihat Katalog Live
             </Link>
+          </div>
+        </div>
+
+        <section className="mt-24 grid gap-8 md:grid-cols-3 animate-fade-in" style={{animationDelay: '0.6s'}}>
+          {[
+            { label: 'Mystery Bag', icon: '🛍️', desc: 'Paket kejutan dengan roti, kue, dan camilan premium.', color: 'from-purple-500 to-pink-500' },
+            { label: 'Porsi Resto', icon: '🍱', desc: 'Makanan berat dari resto dan warung dengan diskon besar.', color: 'from-orange-500 to-red-500' },
+            { label: 'Bahan Segar', icon: '🥗', desc: 'Sayur, buah, dan bahan masak segar siap diolah.', color: 'from-green-500 to-emerald-500' },
+          ].map((item, index) => (
+            <article key={item.label} className="glass-card group flex flex-col gap-8 rounded-[2rem] border border-white/10 bg-white/5 p-10 shadow-xl shadow-slate-950/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl" style={{animationDelay: `${0.8 + index * 0.2}s`}}>
+              <div className={`flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br ${item.color} text-3xl shadow-inner group-hover:scale-110 transition-transform duration-300`}>
+                {item.icon}
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">{item.label}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-400 group-hover:text-slate-300 transition-colors duration-300">{item.desc}</p>
+              </div>
+            </article>
+          ))}
+        </section>
+
+        <section className="mt-24 rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900/70 to-slate-800/70 p-12 shadow-[0_40px_80px_-40px_rgba(15,23,42,0.9)] animate-fade-in" style={{animationDelay: '1.4s'}}>
+          <div className="grid gap-10 lg:grid-cols-[1.45fr_1fr] lg:items-center">
+            <div>
+              <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Kenapa Pangan Murah?</p>
+              <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl leading-tight">
+                Solusi hemat saat kamu butuh <span className="text-emerald-400">makanan cepat saji</span>.
+              </h2>
+            </div>
+            <div className="space-y-4 text-slate-300">
+              <p className="leading-8 text-base">Cari paket siap ambil dekatmu, pilih penjual terpercaya, dan bantu lingkungan sekaligus isi perut.</p>
+              <p className="font-semibold text-emerald-300 flex items-center gap-3 text-lg">
+                <span>⚡</span> Lebih cepat. Lebih murah. Lebih bertanggung jawab.
+              </p>
+            </div>
           </div>
         </section>
 
-        {/* Featured Section (Card Grid) */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Stats Section */}
+        <section className="mt-24 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4 animate-fade-in" style={{animationDelay: '1.6s'}}>
           {[
-            { label: 'Mystery Bag', icon: '🛍️', desc: 'Paket kejutan berisi aneka roti dan kue segar.' },
-            { label: 'Porsi Resto', icon: '🍱', desc: 'Makanan berat kualitas restoran diskon 50%++.' },
-            { label: 'Bahan Segar', icon: '🥗', desc: 'Sayur dan buah surplus layak konsumsi.' },
-          ].map((item, i) => (
-            <div key={i} className="group bg-white/5 p-8 rounded-[2.5rem] border border-white/5 hover:border-green-500/50 transition-all">
-              <div className="text-4xl mb-6">{item.icon}</div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-green-500 transition">{item.label}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+            { number: '12K+', label: 'Paket Diselamatkan', icon: '📦' },
+            { number: '500+', label: 'Mitra UMKM', icon: '🤝' },
+            { number: '98%', label: 'Kepuasan Pengguna', icon: '⭐' },
+            { number: '2.5T', label: 'CO2 Terhindar', icon: '🌱' },
+          ].map((stat, index) => (
+            <div key={stat.label} className="text-center glass-card p-6 rounded-2xl hover:scale-105 transition-all duration-300" style={{animationDelay: `${1.8 + index * 0.1}s`}}>
+              <div className="text-2xl mb-2">{stat.icon}</div>
+              <div className="text-2xl font-black text-emerald-400 mb-1">{stat.number}</div>
+              <div className="text-xs text-slate-400 uppercase tracking-wider">{stat.label}</div>
             </div>
           ))}
-        </div>
+        </section>
       </main>
     </div>
   );
