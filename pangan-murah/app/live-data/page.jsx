@@ -14,10 +14,10 @@ export default async function LiveData() {
 
   // Mock data untuk makanan yang lebih realistis
   const foodItems = [
-    { id: 1, name: 'Paket Roti Premium', desc: 'Koleksi roti dan kue segar dari bakery ternama', price: 'Rp 25.000', discount: '70%', icon: '🥖', category: 'Bakery' },
-    { id: 2, name: 'Nasi Box Restoran', desc: 'Porsi nasi lengkap dengan lauk-pauk spesial', price: 'Rp 15.000', discount: '60%', icon: '🍱', category: 'Restaurant' },
+    { id: 1, name: 'Roti', desc: 'Koleksi roti dan kue segar dari bakery ternama', price: 'Rp 25.000', discount: '70%', icon: '🥖', category: 'Bakery' },
+    { id: 2, name: 'Nasi Box', desc: 'Porsi nasi lengkap dengan lauk-pauk spesial', price: 'Rp 15.000', discount: '60%', icon: '🍱', category: 'Restaurant' },
     { id: 3, name: 'Buah Segar Mix', desc: 'Paket buah-buahan organik siap santap', price: 'Rp 12.000', discount: '50%', icon: '🍎', category: 'Fresh' },
-    { id: 4, name: 'Camilan Premium', desc: 'Kue kering dan snack berkualitas tinggi', price: 'Rp 18.000', discount: '65%', icon: '🍪', category: 'Snacks' },
+    { id: 4, name: 'Camilan Sehat', desc: 'Kue kering dan snack berkualitas tinggi', price: 'Rp 18.000', discount: '65%', icon: '🍪', category: 'Snacks' },
     { id: 5, name: 'Sayur Organik', desc: 'Paket sayuran segar untuk memasak', price: 'Rp 8.000', discount: '55%', icon: '🥬', category: 'Vegetables' },
     { id: 6, name: 'Minuman Segar', desc: 'Jus dan minuman sehat dalam kemasan', price: 'Rp 10.000', discount: '45%', icon: '🥤', category: 'Beverages' },
   ];

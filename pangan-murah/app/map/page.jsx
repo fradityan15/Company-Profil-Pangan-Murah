@@ -47,9 +47,9 @@ export default function MapPage() {
             </div>
 
             {[
-              { name: 'Cafe Kojo', dist: '0.8 km', stock: '5 Bag', rating: 4.8, time: 'Buka sampai 20:00', icon: '🥖' },
-              { name: 'Warung Barokah', dist: '1.2 km', stock: '2 Porsi', rating: 4.6, time: 'Buka sampai 22:00', icon: '🍜' },
-              { name: 'Toko Fresh', dist: '2.5 km', stock: '8 Pack', rating: 4.9, time: 'Buka sampai 18:00', icon: '🍎' },
+              { name: 'Cafe Bajawa', dist: '0.8 km', stock: '5 Bag', rating: 4.8, time: 'Buka sampai 20:00', icon: '🥖' },
+              { name: 'Warung Bersih Barokah', dist: '1.2 km', stock: '2 Porsi', rating: 4.6, time: 'Buka sampai 22:00', icon: '🍜' },
+              { name: 'Toko Buah Fresh', dist: '2.5 km', stock: '8 Pack', rating: 4.9, time: 'Buka sampai 18:00', icon: '🍎' },
             ].map((shop, index) => (
               <div key={index} className="glass-card p-6 rounded-2xl hover:border-slate-500/50 transition-all duration-300 hover:scale-105 cursor-pointer group animate-fade-in" style={{animationDelay: `${0.6 + index * 0.2}s`}}>
                 <div className="flex justify-between items-start mb-3">
