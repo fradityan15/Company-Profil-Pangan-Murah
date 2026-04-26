@@ -11,14 +11,14 @@ export default function Service() {
           <div className="space-y-8">
             <div className="space-y-6">
               <h1 className="text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl leading-tight animate-pop-in animate-pop-in-delay-1">
-                Solusi Lengkap untuk <span className="text-amber-400">Pangan Berkelanjutan</span>.
+                Solusi Lengkap untuk <span className="text-blue-400">Pangan Berkelanjutan</span>.
               </h1>
               <p className="max-w-3xl text-lg leading-8 text-slate-400 sm:text-xl animate-pop-in animate-pop-in-delay-2">
                 Kami menyediakan platform komprehensif yang menghubungkan surplus makanan berkualitas dengan konsumen yang membutuhkan, sambil mendukung UMKM lokal dan mengurangi limbah pangan.
               </p>
             </div>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5 animate-pop-in animate-pop-in-delay-3">
-              <Link href="/live-data" className="inline-flex items-center justify-center rounded-full bg-amber-500 px-10 py-4 text-base font-black text-slate-950 transition-all duration-300 hover:bg-amber-400 hover:scale-105">
+              <Link href="/live-data" className="inline-flex items-center justify-center rounded-full bg-green-500 px-10 py-4 text-base font-black text-slate-950 transition-all duration-300 hover:bg-green-400 hover:scale-105">
                 Jelajahi Katalog
               </Link>
               <Link href="/map" className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900/80 px-10 py-4 text-base font-black text-slate-100 transition-all duration-300 hover:border-slate-400 hover:text-slate-300 hover:bg-slate-500/10 hover:scale-105">
@@ -64,7 +64,7 @@ export default function Service() {
               <div className="space-y-2">
                 {item.features.map((feature, featureIndex) => (
                   <div key={feature} className="flex items-center gap-2 text-sm text-slate-300 animate-pop-in-left" style={{animationDelay: `${0.5 + index * 0.1 + featureIndex * 0.05}s`}}>
-                    <span className="text-amber-400">✓</span>
+                    <span className="text-green-400">✓</span>
                     {feature}
                   </div>
                 ))}
@@ -130,7 +130,7 @@ export default function Service() {
             </div>
             <div className="space-y-4 text-slate-300 animate-pop-in-right animate-pop-in-delay-1">
               <p className="leading-8 animate-pop-in-up animate-pop-in-delay-2">Daftar sekarang dan dapatkan akses penuh ke semua fitur platform Pangan Murah. Mulai langkah Anda menuju konsumsi yang lebih hemat dan berkelanjutan.</p>
-              <Link href="/live-data" className="inline-flex items-center justify-center rounded-full bg-amber-500 px-10 py-4 text-base font-black text-slate-950 transition-all duration-300 hover:bg-amber-400 hover:scale-105 animate-pop-in-bounce animate-pop-in-delay-3">
+              <Link href="/live-data" className="inline-flex items-center justify-center rounded-full bg-green-500 px-10 py-4 text-base font-black text-slate-950 transition-all duration-300 hover:bg-green-400 hover:scale-105 animate-pop-in-bounce animate-pop-in-delay-3">
                 Mulai Sekarang
               </Link>
             </div>

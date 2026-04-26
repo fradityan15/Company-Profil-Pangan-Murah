@@ -11,17 +11,17 @@ export default function Home() {
 
           <h1 className="max-w-4xl text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl leading-tight animate-pop-in animate-pop-in-delay-1">
             Makan Enak, <br />
-            <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400 bg-clip-text text-transparent animate-pulse">
+            <span className="bg-gradient-to-r from-blue-500 via-green-300 to-blue-400 bg-clip-text text-transparent animate-pulse">
               Hemat Kantong.
             </span>
           </h1>
 
-          <p className="mt-8 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg animate-pop-in animate-pop-in-delay-2">
+          <p className="mt-8 max-w-2xl text-base leading-8 text-white-400 sm:text-lg animate-pop-in animate-pop-in-delay-2">
             Temukan makanan surplus berkualitas dengan harga murah sambil membantu mengurangi limbah pangan. Aksi kecilmu berarti manfaat besar bagi komunitas dan lingkungan.
           </p>
 
           <div className="mt-12 flex flex-col items-center gap-5 sm:flex-row sm:justify-center animate-pop-in animate-pop-in-delay-3">
-            <Link href="/map" className="inline-flex items-center justify-center rounded-full bg-slate-500 px-10 py-5 text-base font-black text-slate-950 transition-all duration-300 hover:bg-slate-400 hover:shadow-[0_20px_60px_-30px_rgba(245,158,11,0.8)] hover:scale-105 active:scale-95">
+            <Link href="/map" className="inline-flex items-center justify-center rounded-full bg-green-500 px-10 py-5 text-base font-black text-slate-950 transition-all duration-300 hover:bg-slate-400 hover:shadow-[0_20px_60px_-30px_rgba(245,158,11,0.8)] hover:scale-105 active:scale-95">
               🚀 Mulai Berburu Makanan
             </Link>
             <Link href="/live-data" className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900/80 px-10 py-5 text-base font-black text-slate-100 transition-all duration-300 hover:border-slate-500 hover:text-slate-300 hover:bg-slate-500/10 hover:scale-105">
@@ -51,14 +51,14 @@ export default function Home() {
         <section className="mt-24 rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900/70 to-slate-800/70 p-12 shadow-[0_40px_80px_-40px_rgba(15,23,42,0.9)] animate-pop-in animate-pop-in-delay-1">
           <div className="grid gap-10 lg:grid-cols-[1.45fr_1fr] lg:items-center">
             <div>
-              <p className="text-xs uppercase tracking-[0.35em] text-slate-500 animate-pop-in-left">Kenapa Pangan Murah?</p>
+              <p className="text-xs uppercase tracking-[0.35em] text-white-500 animate-pop-in-left">Kenapa Pangan Murah?</p>
               <h2 className="mt-4 text-3xl font-black text-white sm:text-4xl leading-tight animate-pop-in-up animate-pop-in-delay-1">
-                Solusi hemat saat kamu butuh <span className="text-amber-400">makanan cepat saji</span>.
+                Solusi hemat saat kamu butuh <span className="text-blue-400">makanan cepat saji</span>.
               </h2>
             </div>
             <div className="space-y-4 text-slate-300 animate-pop-in-right animate-pop-in-delay-2">
               <p className="leading-8 text-base">Cari paket siap ambil dekatmu, pilih penjual terpercaya, dan bantu lingkungan sekaligus isi perut.</p>
-              <p className="font-semibold text-amber-300 flex items-center gap-3 text-lg animate-pop-in-bounce animate-pop-in-delay-3">
+              <p className="font-semibold text-white-400 flex items-center gap-3 text-lg animate-pop-in-bounce animate-pop-in-delay-3">
                 <span>⚡</span> Lebih cepat. Lebih murah. Lebih bertanggung jawab.
               </p>
             </div>
@@ -75,7 +75,7 @@ export default function Home() {
           ].map((stat, index) => (
             <div key={stat.label} className={`text-center glass-card p-6 rounded-2xl hover:scale-105 transition-all duration-300 animate-pop-in animate-pop-in-delay-${index + 1}`}>
               <div className="text-2xl mb-2 animate-pop-in-bounce" style={{animationDelay: `${0.2 + index * 0.1}s`}}>{stat.icon}</div>
-              <div className="text-2xl font-black text-slate-400 mb-1 animate-pop-in-up" style={{animationDelay: `${0.3 + index * 0.1}s`}}>{stat.number}</div>
+              <div className="text-2xl font-black text-white-400 mb-1 animate-pop-in-up" style={{animationDelay: `${0.3 + index * 0.1}s`}}>{stat.number}</div>
               <div className="text-xs text-slate-400 uppercase tracking-wider animate-pop-in-up" style={{animationDelay: `${0.4 + index * 0.1}s`}}>{stat.label}</div>
             </div>
           ))}

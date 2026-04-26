@@ -11,14 +11,14 @@ export default function Contact() {
           <div className="space-y-8">
             <div className="space-y-6">
               <h1 className="text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl leading-tight animate-pop-in animate-pop-in-delay-1">
-                Mari <span className="text-amber-400">Berkolaborasi</span> untuk Masa Depan Pangan yang Lebih Baik.
+                Mari <span className="text-blue-400">Berkolaborasi</span> untuk Masa Depan Pangan yang Lebih Baik.
               </h1>
               <p className="max-w-3xl text-lg leading-8 text-slate-400 sm:text-xl animate-pop-in animate-pop-in-delay-2">
                 Kami terbuka untuk kemitraan dengan UMKM, komunitas, dan individu yang ingin berkontribusi dalam mengurangi limbah pangan. Hubungi kami untuk diskusi lebih lanjut.
               </p>
             </div>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5 animate-pop-in animate-pop-in-delay-3">
-              <Link href="mailto:contact@panganmurah.id" className="inline-flex items-center justify-center rounded-full bg-amber-500 px-10 py-4 text-base font-black text-slate-950 transition-all duration-300 hover:bg-amber-400 hover:scale-105">
+              <Link href="mailto:contact@panganmurah.id" className="inline-flex items-center justify-center rounded-full bg-green-500 px-10 py-4 text-base font-black text-slate-950 transition-all duration-300 hover:bg-green-400 hover:scale-105">
                 📧 Email Kami
               </Link>
               <Link href="https://wa.me/6281234567890" className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900/80 px-10 py-4 text-base font-black text-slate-100 transition-all duration-300 hover:border-green-400 hover:text-green-300 hover:bg-slate-500/10 hover:scale-105">
@@ -91,7 +91,7 @@ export default function Contact() {
             </div>
             <div className="space-y-4 text-slate-300 animate-pop-in-right animate-pop-in-delay-1">
               <p className="leading-8 animate-pop-in-up animate-pop-in-delay-2">Kami percaya bahwa dengan kolaborasi yang kuat, kita dapat menciptakan dampak yang lebih besar untuk komunitas dan lingkungan.</p>
-              <Link href="mailto:contact@panganmurah.id" className="inline-flex items-center justify-center rounded-full bg-amber-500 px-10 py-4 text-base font-black text-slate-950 transition-all duration-300 hover:bg-amber-400 hover:scale-105 animate-pop-in-bounce animate-pop-in-delay-3">
+              <Link href="mailto:contact@panganmurah.id" className="inline-flex items-center justify-center rounded-full bg-green-500 px-10 py-4 text-base font-black text-slate-950 transition-all duration-300 hover:bg-green-400 hover:scale-105 animate-pop-in-bounce animate-pop-in-delay-3">
                 Mulai Kolaborasi
               </Link>
             </div>

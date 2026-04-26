@@ -74,7 +74,7 @@ export default async function LiveData() {
               {/* Price & Button */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-lg font-black text-amber-400">{item.price}</p>
+                  <p className="text-lg font-black text-white-400">{item.price}</p>
                   <p className="text-xs text-slate-500 line-through">Rp 50.000</p>
                 </div>
                 <button className="px-6 py-3 bg-green-500 text-slate-950 font-black rounded-2xl hover:bg-green-400 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
@@ -101,7 +101,7 @@ export default async function LiveData() {
         </div>
 
         <div className="mt-16 text-center">
-          <Link href="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-amber-500 transition-all font-bold text-xs uppercase tracking-[0.2em] hover:gap-4">
+          <Link href="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-500 transition-all font-bold text-xs uppercase tracking-[0.2em] hover:gap-4">
             ← Kembali ke Beranda
           </Link>
         </div>

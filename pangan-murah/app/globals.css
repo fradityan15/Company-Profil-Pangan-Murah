@@ -8,6 +8,7 @@
   --color-navy-card: #0f172a;
 }
 
+
 /* 2. Custom Utilities */
 @layer components {
   /* Di v4, sebaiknya gunakan variabel CSS murni untuk transparansi di dalam @apply */

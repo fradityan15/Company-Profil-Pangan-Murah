@@ -9,7 +9,7 @@ export default function MapPage() {
         <div className="flex justify-between items-center mb-10 animate-fade-in">
           <div>
             <h1 className="text-3xl md:text-5xl font-black text-white mb-2">
-              Peta <span className="text-gradient text-amber-400 animate-pulse">Penyelamatan</span>
+              Peta <span className="text-gradient text-blue-400 animate-pulse">Penyelamatan</span>
             </h1>
             <p className="text-slate-400">Temukan titik penyelamatan makanan terdekat</p>
           </div>
@@ -24,7 +24,7 @@ export default function MapPage() {
           <div className="lg:col-span-2 h-80 sm:h-[420px] glass-card rounded-[2.5rem] border border-white/5 relative overflow-hidden flex items-center justify-center animate-fade-in" style={{animationDelay: '0.2s'}}>
              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(245,158,11,0.18),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(251,191,36,0.16),_transparent_30%)]"></div>
              <div className="relative z-10 text-center p-8 sm:p-10">
-                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl animate-bounce">
+                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-500 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl animate-bounce">
                   📍
                 </div>
                 <p className="font-bold text-white text-lg sm:text-xl mb-2">Mencari titik terdekat...</p>
@@ -32,9 +32,9 @@ export default function MapPage() {
 
                 {/* Loading Animation */}
                 <div className="flex justify-center gap-1">
-                  <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
-                  <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                  <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
                 </div>
              </div>
           </div>
@@ -74,7 +74,7 @@ export default function MapPage() {
                   <p className="text-xs text-slate-500 flex items-center gap-1">
                     <span className="text-amber-400">📍</span> {shop.dist} dari lokasimu
                   </p>
-                  <button className="text-xs bg-amber-500 text-slate-950 px-3 py-1 rounded-full font-bold hover:bg-amber-400 transition-colors duration-300">
+                  <button className="text-xs bg-green-500 text-slate-950 px-3 py-1 rounded-full font-bold hover:bg-green-400 transition-colors duration-300">
                     Arahkan
                   </button>
                 </div>
@@ -86,7 +86,7 @@ export default function MapPage() {
               <div className="text-center">
                 <div className="w-8 h-8 bg-white/10 rounded-full mx-auto mb-2 flex items-center justify-center text-sm">🔍</div>
                 <p className="text-xs text-slate-500">Cari lebih banyak lokasi</p>
-                <button className="text-xs text-amber-400 hover:text-amber-300 transition-colors duration-300 mt-1">
+                <button className="text-xs text-slate-400 hover:text-green-400 transition-colors duration-300 mt-1">
                   Perluas radius →
                 </button>
               </div>
@@ -109,7 +109,7 @@ export default function MapPage() {
                 <div className="flex-1">
                   <h4 className="font-bold text-white mb-1 group-hover:text-slate-400 transition-colors duration-300">{action.title}</h4>
                   <p className="text-xs text-slate-400 mb-2">{action.desc}</p>
-                  <button className="text-xs text-amber-400 hover:text-amber-300 transition-colors duration-300 font-medium">
+                  <button className="text-xs text-slate-400 hover:text-green-400 transition-colors duration-300 font-medium">
                     {action.action} →
                   </button>
                 </div>
