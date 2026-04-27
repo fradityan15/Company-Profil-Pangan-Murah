@@ -1,4 +1,11 @@
+'use client';
+
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+import 'leaflet/dist/leaflet.css';
+
+// Dynamically import MapComponent to avoid SSR issues
+const MapComponent = dynamic(() => import('../../components/MapComponent'), { ssr: false });
 
 export default function MapPage() {
   return (
@@ -20,23 +27,9 @@ export default function MapPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-          {/* Simulasi Area Peta */}
-          <div className="lg:col-span-2 h-80 sm:h-[420px] glass-card rounded-[2.5rem] border border-white/5 relative overflow-hidden flex items-center justify-center animate-fade-in" style={{animationDelay: '0.2s'}}>
-             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(245,158,11,0.18),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(251,191,36,0.16),_transparent_30%)]"></div>
-             <div className="relative z-10 text-center p-8 sm:p-10">
-                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-500 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl animate-bounce">
-                  📍
-                </div>
-                <p className="font-bold text-white text-lg sm:text-xl mb-2">Mencari titik terdekat...</p>
-                <p className="text-sm text-slate-400 max-w-md mx-auto mb-6">Sistem kami sedang memindai lokasi penyelamatan aktif di sekitar Anda</p>
-
-                {/* Loading Animation */}
-                <div className="flex justify-center gap-1">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
-                </div>
-             </div>
+          {/* Peta Jakarta */}
+          <div className="lg:col-span-2 h-80 sm:h-[420px] glass-card rounded-[2.5rem] border border-white/5 relative overflow-hidden animate-fade-in" style={{animationDelay: '0.2s'}}>
+            <MapComponent />
           </div>
 
           {/* Daftar Toko Terdekat */}
