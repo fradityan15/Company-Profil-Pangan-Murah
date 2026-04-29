@@ -1,19 +1,25 @@
 import Link from 'next/link';
+import { supabase } from '@/lib/supabaseClient';
 
-// Fungsi ambil data API
+// Fungsi ambil data produk dari Supabase
 async function getKatalogData() {
-  const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=6', {
-    next: { revalidate: 60 }
-  });
-  if (!res.ok) throw new Error('Gagal memuat data');
-  return res.json();
+  const { data, error } = await supabase
+    .from('products')
+    .select('id,name,description,price,stock,category,seller_email')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Gagal memuat katalog dari Supabase:', error?.message ?? error);
+    return [];
+  }
+
+  return data ?? [];
 }
 
 export default async function LiveData() {
   const data = await getKatalogData();
 
-  // Mock data untuk makanan yang lebih realistis
-  const foodItems = [
+  const fallbackItems = [
     { id: 1, name: 'Roti', desc: 'Koleksi roti dan kue segar dari bakery ternama', price: 'Rp 25.000', discount: '70%', icon: '🥖', category: 'Bakery' },
     { id: 2, name: 'Nasi Box', desc: 'Porsi nasi lengkap dengan lauk-pauk spesial', price: 'Rp 15.000', discount: '60%', icon: '🍱', category: 'Restaurant' },
     { id: 3, name: 'Buah Segar Mix', desc: 'Paket buah-buahan organik siap santap', price: 'Rp 12.000', discount: '50%', icon: '🍎', category: 'Fresh' },
@@ -21,6 +27,20 @@ export default async function LiveData() {
     { id: 5, name: 'Sayur Organik', desc: 'Paket sayuran segar untuk memasak', price: 'Rp 8.000', discount: '55%', icon: '🥬', category: 'Vegetables' },
     { id: 6, name: 'Minuman Segar', desc: 'Jus dan minuman sehat dalam kemasan', price: 'Rp 10.000', discount: '45%', icon: '🥤', category: 'Beverages' },
   ];
+
+  const foodItems = data && data.length > 0
+    ? data.map((item) => ({
+        id: item.id,
+        name: item.name,
+        desc: item.description,
+        price: typeof item.price === 'number' ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.price) : item.price,
+        discount: 'TERBARU',
+        icon: '🍽',
+        category: item.category || 'Lainnya',
+        stock: item.stock,
+        seller: item.seller_email,
+      }))
+    : fallbackItems;
 
   return (
     <div className="min-h-screen bg-[#0F172A] text-slate-200 p-8 md:p-20 font-sans">
@@ -72,22 +92,28 @@ export default async function LiveData() {
               </p>
 
               {/* Price & Button */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-lg font-black text-white-400">{item.price}</p>
                   <p className="text-xs text-slate-500 line-through">Rp 50.000</p>
                 </div>
-                <button className="px-6 py-3 bg-green-500 text-slate-950 font-black rounded-2xl hover:bg-green-400 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25">
+                <Link
+                  href={`/checkout?productId=${encodeURIComponent(item.id)}`}
+                  className="px-6 py-3 bg-green-500 text-slate-950 font-black rounded-2xl hover:bg-green-400 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25"
+                >
                   Ambil
-                </button>
+                </Link>
               </div>
 
               {/* Stock Indicator */}
-              <div className="mt-4 flex items-center gap-2">
-                <div className="flex-1 bg-slate-700 rounded-full h-2">
-                  <div className="bg-green-500 h-2 rounded-full w-3/4"></div>
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3 text-xs text-slate-400 uppercase tracking-[0.2em]">
+                  <span>{item.stock ? `${item.stock} stok tersedia` : 'Stok terbatas'}</span>
+                  <span className="rounded-full bg-slate-800/70 px-3 py-1 text-[10px] text-slate-300">{item.category}</span>
                 </div>
-                <span className="text-xs text-slate-400">75% tersisa</span>
+                <div className="flex-1 bg-slate-700 rounded-full h-2">
+                  <div className="bg-green-500 h-2 rounded-full w-[75%]"></div>
+                </div>
               </div>
             </div>
           ))}

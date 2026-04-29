@@ -1,7 +1,7 @@
 import './globals.css'
-import Link from 'next/link'
 import React from 'react'
-import MobileMenu from '../components/MobileMenu'
+import { AuthProvider } from '../lib/AuthContext'
+import Header from '../components/Header'
 
 export const metadata = {
   title: 'Pangan Murah | Penyelamat Makanan Indonesia',
@@ -16,73 +16,38 @@ export default function RootLayout({
   return (
     <html lang="id" className="scroll-smooth">
       <body className="bg-[#020617] text-slate-200 font-sans min-h-screen flex flex-col antialiased">
-        
-        {/* --- GLOBAL HEADER --- */}
-        <nav className="sticky top-0 z-[100] w-full border-b border-white/10 bg-slate-950/95 backdrop-blur-xl">
-          <div className="max-w-7xl mx-auto flex h-20 items-center justify-between gap-6 px-6">
-            <Link href="/" className="text-2xl font-black tracking-tighter text-white transition-transform hover:scale-105">
-              Pangan<span className="text-blue-300 italic">Murah</span>
-            </Link>
+        <AuthProvider>
+          {/* --- GLOBAL HEADER --- */}
+          <Header />
 
-            <div className="hidden md:flex items-center gap-8 text-sm uppercase tracking-[0.22em] text-slate-300">
-              <Link href="/" className="transition-colors hover:text-blue-400">Home</Link>
-              <Link href="/about" className="transition-colors hover:text-blue-400">About</Link>
-              <Link href="/service" className="transition-colors hover:text-blue-400">Service</Link>
-              <Link href="/live-data" className="inline-flex items-center gap-2 transition-colors hover:text-blue-400">
-                <span className="h-2.5 w-2.5 rounded-full bg-blue-300 animate-pulse" />
-                Katalog
-              </Link>
-              <Link href="/contact" className="transition-colors hover:text-blue-400">Contact</Link>
+          {/* --- ISI HALAMAN --- */}
+          <main className="flex-grow">
+            {children}
+          </main>
+
+          {/* --- GLOBAL FOOTER --- */}
+          <footer className="border-t border-white/5 bg-[#010409] py-12">
+            <div className="max-w-7xl mx-auto px-6 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="text-2xl font-black">Pangan<span className="text-cyan-400">Murah</span></div>
+                <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-500">
+                  Mendukung pembeli dan penjual dengan solusi pangan hemat serta berkelanjutan di Indonesia.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
+                <a href="/live-data" className="transition hover:text-cyan-300">Katalog</a>
+                <a href="/map" className="transition hover:text-cyan-300">Peta</a>
+                <a href="/about" className="transition hover:text-cyan-300">Tentang</a>
+                <a href="/contact" className="transition hover:text-cyan-300">Kontak</a>
+              </div>
             </div>
 
-            <div className="hidden md:block">
-              <Link href="/map" className="rounded-full bg-green-500 px-6 py-2.5 text-sm font-black text-slate-950 transition hover:bg-green-400 hover:shadow-[0_0_18px_rgba(245,158,11,0.35)]">
-                Cari Lokasi
-              </Link>
+            <div className="max-w-7xl mx-auto px-6 mt-10 border-t border-white/5 pt-6 text-center text-[11px] uppercase tracking-[0.3em] text-slate-600">
+              © 2026 Pangan Murah • Semua hak cipta dilindungi
             </div>
-
-            <MobileMenu />
-          </div>
-        </nav>
-
-        {/* --- ISI HALAMAN --- */}
-        <main className="flex-grow">
-          {children}
-        </main>
-
-        {/* --- GLOBAL FOOTER --- */}
-        <footer className="border-t border-white/5 bg-[#010409] py-16">
-          <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div>
-              <div className="text-2xl font-black mb-6">Pangan<span className="text-blue-400">Murah</span></div>
-              <p className="text-sm text-slate-500 leading-relaxed max-w-xs">
-                Membantu warga Indonesia mendapatkan makanan berkualitas dengan harga hemat sambil mengurangi limbah lingkungan.
-              </p>
-            </div>
-            
-            <div className="flex flex-col gap-4">
-              <h4 className="font-black text-white text-xs uppercase tracking-[0.2em] mb-2">Navigasi Jalur Cepat</h4>
-              <Link href="/about" className="text-sm text-slate-500 hover:text-blue-400 transition">Tentang Gerakan Kami</Link>
-              <Link href="/service" className="text-sm text-slate-500 hover:text-blue-400 transition">Layanan Kami</Link>
-              <Link href="/live-data" className="text-sm text-slate-500 hover:text-blue-400 transition">Katalog</Link>
-              <Link href="/map" className="text-sm text-slate-500 hover:text-blue-400 transition">Peta Mitra Terdekat</Link>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <h4 className="font-black text-white text-xs uppercase tracking-[0.2em] mb-2">Hubungi Kami</h4>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Bandung<br />
-                Jawa Barat, Indonesia
-              </p>
-            </div>
-          </div>
-
-          <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-slate-600 font-bold uppercase tracking-[0.3em]">
-            <p>© 2026 PANGAN MURAH • PROJECT PANGAN MURAH</p>
-            <p className="text-slate-700">DIBUAT DENGAN ❤️ DI INDONESIA</p>
-          </div>
-        </footer>
-
+          </footer>
+        </AuthProvider>
       </body>
     </html>
   )
