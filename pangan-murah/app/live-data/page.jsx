@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -54,7 +56,7 @@ export default async function LiveData() {
             Katalog
           </h1>
           <p className="text-slate-400 max-w-2xl leading-relaxed text-center mx-auto">
-            Daftar di bawah ini adalah stok makanan surplus terbaru dari mitra Pangan Murah. Data diperbarui secara real-time setiap 5 menit.
+            Daftar di bawah ini adalah stok makanan surplus terbaru dari mitra Pangan Murah. Data diperbarui secara real-time setiap harinya.
           </p>
         </div>
 
