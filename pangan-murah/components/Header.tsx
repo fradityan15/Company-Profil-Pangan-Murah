@@ -47,7 +47,7 @@ export default function Header() {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link href="/map" className="rounded-full bg-cyan-400 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300">
+          <Link href="/map" className="rounded-full bg-green-400 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-green-300">
             Cari Lokasi
           </Link>
 
@@ -63,7 +63,7 @@ export default function Header() {
               <Link href="/login" className="rounded-full px-4 py-2 text-sm font-semibold text-slate-200 transition hover:text-white">
                 Login
               </Link>
-              <Link href="/register" className="rounded-full bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300">
+              <Link href="/register" className="rounded-full bg-green-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-green-400">
                 Daftar
               </Link>
             </div>

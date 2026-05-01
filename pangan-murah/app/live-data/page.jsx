@@ -78,8 +78,8 @@ export default async function LiveData() {
                   {item.icon}
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] bg-red-500/20 text-red-400 px-3 py-1 rounded-full font-black uppercase tracking-widest">
-                    {item.discount} OFF
+                  <span className="text-[10px] bg-green-500/20 text-green-400 px-3 py-1 rounded-full font-black uppercase tracking-widest">
+                    {item.discount}
                   </span>
                   <p className="text-xs text-slate-500 mt-1">{item.category}</p>
                 </div>

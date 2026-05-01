@@ -165,7 +165,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full mt-6 rounded-2xl bg-cyan-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-70"
+              className="w-full mt-6 rounded-2xl bg-green-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-green-400 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isLoading ? 'Mendaftar...' : 'Daftar Sekarang'}
             </button>
@@ -173,7 +173,7 @@ export default function RegisterPage() {
 
           <p className="text-center text-sm text-slate-400 mt-6">
             Sudah punya akun?{' '}
-            <Link href="/login" className="text-cyan-400 hover:text-cyan-300 font-semibold">
+            <Link href="/login" className="text-green-400 hover:text-green-300 font-semibold">
               Masuk di sini
             </Link>
           </p>

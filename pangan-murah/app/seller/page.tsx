@@ -181,7 +181,7 @@ export default function SellerPage() {
         <section className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900/80 to-slate-800/80 p-10 shadow-2xl shadow-black/20">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-sm uppercase tracking-[0.35em] text-amber-300">Dashboard Penjual</p>
+              <p className="text-sm uppercase tracking-[0.35em] text-blue-400">Dashboard Penjual</p>
               <h1 className="mt-4 text-4xl font-black text-white">Selamat datang, {user.full_name || user.email}!</h1>
               <p className="mt-4 max-w-2xl text-slate-400 leading-relaxed">
                 Kelola penawaran makanan, atur stok, dan pantau pembeli yang berminat di marketplace Pangan Murah.
@@ -189,7 +189,7 @@ export default function SellerPage() {
             </div>
             <div className="rounded-3xl bg-slate-950/80 p-6 text-center text-slate-200 shadow-inner shadow-slate-900/40">
               <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Akun Anda</p>
-              <p className="mt-3 text-3xl font-black text-amber-300">Penjual</p>
+              <p className="mt-3 text-3xl font-black text-blue-400">Penjual</p>
             </div>
           </div>
         </section>
@@ -232,7 +232,7 @@ export default function SellerPage() {
             </div>
             <button
               onClick={() => setShowAddProduct(!showAddProduct)}
-              className="rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black text-slate-950 transition hover:bg-amber-400 active:scale-95"
+              className="rounded-2xl bg-green-500 px-6 py-3 text-sm font-black text-slate-950 transition hover:bg-green-400 active:scale-95"
             >
               + Tambah Produk
             </button>
