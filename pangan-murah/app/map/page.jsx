@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -7,256 +7,133 @@ import 'leaflet/dist/leaflet.css';
 import { supabase } from '../../lib/supabaseClient';
 
 const MapComponent = dynamic(() => import('../../components/MapComponent'), { ssr: false });
-const initialForm = { name: '', category: '', address: '' };
 
 export default function MapPage() {
   const [locations, setLocations] = useState([]);
-  const [form, setForm] = useState(initialForm);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [notification, setNotification] = useState('');
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    async function fetchLocations() {
+      const { data, error } = await supabase
+        .from('rescue_locations')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        setLocations(data);
+      }
+      setLoading(false);
+    }
     fetchLocations();
+    
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('public:rescue_locations')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'rescue_locations' }, (payload) => {
+        setLocations((current) => [payload.new, ...current]);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  async function fetchLocations() {
-    setIsLoading(true);
-    setError('');
-
-    const { data, error: fetchError } = await supabase
-      .from('rescue_locations')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (fetchError) {
-      console.error(fetchError);
-      setError('Gagal memuat lokasi. Periksa koneksi Supabase.');
-    } else {
-      setLocations(data || []);
-    }
-
-    setIsLoading(false);
-  }
-
-  async function handleSave(event) {
-    event.preventDefault();
-    setNotification('');
-    setError('');
-
-    if (!form.name || !form.category || !form.address) {
-      setError('Semua field harus diisi sebelum menyimpan.');
-      return;
-    }
-
-    setIsSaving(true);
-    const { error: insertError } = await supabase.from('rescue_locations').insert([
-      {
-        name: form.name,
-        category: form.category,
-        address: form.address,
-      },
-    ]);
-
-    setIsSaving(false);
-
-    if (insertError) {
-      console.error(insertError);
-      setError('Gagal menyimpan data. Coba lagi nanti.');
-      return;
-    }
-
-    setForm(initialForm);
-    setNotification('Data lokasi berhasil disimpan ke Supabase.');
-    fetchLocations();
-  }
-
   return (
-    <div className="min-h-screen bg-[#0F172A] text-slate-200 font-sans">
-      <main className="max-w-7xl mx-auto px-6 py-12">
+    <div className="min-h-screen bg-[#050505] text-slate-200 font-sans relative overflow-hidden">
+      {/* Dynamic Backgrounds */}
+      <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-blue-500/10 blur-[150px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-emerald-500/10 blur-[150px] rounded-full pointer-events-none" />
+
+      <main className="max-w-7xl mx-auto px-6 py-12 relative z-10">
         <div className="flex justify-between items-center mb-10 animate-fade-in">
           <div>
-            <h1 className="text-3xl md:text-5xl font-black text-white mb-2">
-              Peta <span className="text-gradient text-blue-400 animate-pulse">Penyelamatan</span>
+            <h1 className="text-3xl md:text-5xl font-black text-white mb-2 tracking-tight">
+              Peta <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 animate-pulse">Penyelamatan</span>
             </h1>
-            <p className="text-slate-400">Temukan titik penyelamatan makanan terdekat dan catat lokasi baru.</p>
+            <p className="text-slate-400 mt-2 font-light">Temukan titik penyelamatan makanan terdekat yang disiarkan langsung oleh para penjual.</p>
           </div>
-          <Link href="/" className="text-sm font-bold text-slate-500 hover:text-white transition-colors hover:scale-105 inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10">
-            <span>←</span> Kembali
+          <Link href="/" className="text-sm font-bold text-slate-400 hover:text-white transition-colors hover:scale-105 inline-flex items-center gap-2 px-6 py-2.5 bg-white/5 rounded-full border border-white/10 hover:bg-white/10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            Kembali
           </Link>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 h-80 sm:h-[420px] glass-card rounded-[2.5rem] border border-white/5 relative overflow-hidden animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <MapComponent />
+          <div className="lg:col-span-2 h-[500px] sm:h-[600px] bg-black/40 rounded-[2.5rem] border border-white/5 relative overflow-hidden animate-fade-in shadow-2xl backdrop-blur-xl" style={{ animationDelay: '0.2s' }}>
+            <MapComponent locations={locations} />
           </div>
 
-          <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-white uppercase tracking-widest text-xs">Tersedia Sekarang</h3>
-              <span className="text-xs text-white bg-yellow-500/10 px-2 py-1 rounded-full">3 lokasi</span>
+          <div className="space-y-4 animate-fade-in flex flex-col max-h-[600px]" style={{ animationDelay: '0.4s' }}>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-bold text-white uppercase tracking-widest text-xs flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="text-emerald-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Tersedia Sekarang
+              </h3>
+              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full uppercase tracking-wider">
+                {locations.length} Lokasi
+              </span>
             </div>
 
-            {[
-              { name: 'Cafe Bajawa', dist: '0.8 km', stock: '5 Bag', rating: 4.8, time: 'Buka sampai 20:00', icon: '🥖' },
-              { name: 'Warung Bersih Barokah', dist: '1.2 km', stock: '2 Porsi', rating: 4.6, time: 'Buka sampai 22:00', icon: '🍜' },
-              { name: 'Toko Buah Fresh', dist: '2.5 km', stock: '8 Pack', rating: 4.9, time: 'Buka sampai 18:00', icon: '🍎' },
-            ].map((shop, index) => (
-              <div key={index} className="glass-card p-6 rounded-2xl hover:border-slate-500/50 transition-all duration-300 hover:scale-105 cursor-pointer group animate-fade-in" style={{ animationDelay: `${0.6 + index * 0.2}s` }}>
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-slate-500 to-slate-500 rounded-xl flex items-center justify-center text-lg group-hover:scale-110 transition-transform duration-300">
-                      {shop.icon}
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-white group-hover:text-slate-400 transition-colors duration-300">{shop.name}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-slate-500">⭐ {shop.rating}</span>
-                        <span className="text-xs text-slate-600">•</span>
-                        <span className="text-xs text-slate-500">{shop.time}</span>
+            <div className="overflow-y-auto pr-2 space-y-4 flex-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent pb-4">
+              {loading ? (
+                <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin mb-3 text-emerald-500/50"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                  <p className="text-sm">Menyinkronkan satelit...</p>
+                </div>
+              ) : locations.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-slate-600 bg-white/[0.02] rounded-[2rem] border border-white/5 border-dashed">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-3 opacity-50"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+                  <p className="text-sm">Belum ada siaran lokasi aktif.</p>
+                </div>
+              ) : (
+                locations.map((loc, index) => (
+                  <div key={loc.id} className="bg-white/[0.02] border border-white/5 p-6 rounded-[2rem] hover:bg-white/[0.04] hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1 cursor-pointer group shadow-lg backdrop-blur-md relative overflow-hidden" style={{ animationDelay: `${0.4 + index * 0.1}s` }}>
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="relative z-10">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 bg-slate-900 border border-white/10 rounded-2xl flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/30 transition-all duration-300 shadow-inner shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-white text-lg leading-tight group-hover:text-emerald-400 transition-colors duration-300">{loc.name}</h4>
+                            <div className="flex items-center gap-2 mt-2">
+                              <span className="text-[10px] font-bold uppercase tracking-widest bg-white/5 border border-white/10 text-slate-300 px-2.5 py-1 rounded-md">
+                                {loc.category}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-400 mb-5 line-clamp-2 leading-relaxed">{loc.address}</p>
+                      <div className="flex items-center justify-between mt-auto">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="text-amber-400" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                          {new Date(loc.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                        <button className="text-[10px] font-bold uppercase tracking-widest bg-white text-black px-4 py-2 rounded-full hover:bg-emerald-400 transition-colors duration-300 flex items-center gap-1.5">
+                          Arahkan
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </button>
                       </div>
                     </div>
                   </div>
-                  <span className="text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded-md font-black uppercase tracking-widest">
-                    {shop.stock}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-xs text-slate-500 flex items-center gap-1">
-                    <span className="text-amber-400">📍</span> {shop.dist} dari lokasimu
-                  </p>
-                  <button className="text-xs bg-green-500 text-slate-950 px-3 py-1 rounded-full font-bold hover:bg-green-400 transition-colors duration-300">
-                    Arahkan
-                  </button>
-                </div>
-              </div>
-            ))}
+                ))
+              )}
+            </div>
 
-            <div className="glass-card p-4 rounded-2xl border-dashed border-white/20 animate-fade-in" style={{ animationDelay: '1.2s' }}>
-              <div className="text-center">
-                <div className="w-8 h-8 bg-white/10 rounded-full mx-auto mb-2 flex items-center justify-center text-sm">🔍</div>
-                <p className="text-xs text-slate-500">Cari lebih banyak lokasi</p>
-                <button className="text-xs text-slate-400 hover:text-green-400 transition-colors duration-300 mt-1">
-                  Perluas radius →
-                </button>
+            <div className="bg-white/[0.01] p-5 rounded-[2rem] border border-white/5 border-dashed shrink-0">
+              <div className="text-center flex flex-col items-center">
+                <div className="w-10 h-10 bg-white/5 border border-white/10 rounded-full mx-auto mb-3 flex items-center justify-center text-slate-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+                <p className="text-xs text-slate-400">Peta diperbarui secara otomatis ketika ada titik baru yang disiarkan oleh penjual.</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 animate-fade-in" style={{ animationDelay: '1.4s' }}>
-          <div className="glass-card p-6 rounded-[2.5rem] border border-white/10 bg-slate-950/40">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <h2 className="text-xl font-semibold text-white">Tambah Lokasi Penyelamatan</h2>
-                <p className="text-sm text-slate-400">Simpan lokasi baru ke Supabase dan lihat daftar histori segera.</p>
-              </div>
-              {notification && (
-                <div className="rounded-2xl bg-emerald-500/10 text-emerald-200 border border-emerald-500/20 px-4 py-3 text-sm">
-                  {notification}
-                </div>
-              )}
-              {error && (
-                <div className="rounded-2xl bg-rose-500/10 text-rose-200 border border-rose-500/20 px-4 py-3 text-sm">
-                  {error}
-                </div>
-              )}
-            </div>
-
-            <form onSubmit={handleSave} className="mt-6 grid gap-4 md:grid-cols-3">
-              <label className="space-y-2 text-sm text-slate-200">
-                Nama lokasi
-                <input
-                  value={form.name}
-                  onChange={(event) => setForm({ ...form, name: event.target.value })}
-                  className="w-full rounded-3xl border border-white/10 bg-slate-950/70 px-4 py-3 text-slate-100 outline-none focus:border-cyan-400"
-                  placeholder="Contoh: Dapur Komunitas"
-                />
-              </label>
-
-              <label className="space-y-2 text-sm text-slate-200">
-                Kategori
-                <input
-                  value={form.category}
-                  onChange={(event) => setForm({ ...form, category: event.target.value })}
-                  className="w-full rounded-3xl border border-white/10 bg-slate-950/70 px-4 py-3 text-slate-100 outline-none focus:border-cyan-400"
-                  placeholder="Contoh: Makanan siap saji"
-                />
-              </label>
-
-              <label className="space-y-2 text-sm text-slate-200">
-                Alamat singkat
-                <input
-                  value={form.address}
-                  onChange={(event) => setForm({ ...form, address: event.target.value })}
-                  className="w-full rounded-3xl border border-white/10 bg-slate-950/70 px-4 py-3 text-slate-100 outline-none focus:border-cyan-400"
-                  placeholder="Contoh: Jl. Sudirman 12"
-                />
-              </label>
-
-              <button
-                type="submit"
-                disabled={isSaving}
-                className="md:col-span-3 rounded-3xl bg-cyan-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                {isSaving ? 'Menyimpan...' : 'Simpan Lokasi'}
-              </button>
-            </form>
-          </div>
-
-          <div className="glass-card rounded-[2.5rem] border border-white/10 bg-slate-950/30 p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-white">Daftar Lokasi Tersimpan</h2>
-                <p className="text-sm text-slate-400">Data diambil langsung dari tabel Supabase.</p>
-              </div>
-              <span className="text-xs bg-slate-900/70 px-3 py-1 rounded-full text-slate-300">{isLoading ? 'Memuat...' : `${locations.length} item`}</span>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="min-w-full border-separate border-spacing-0 text-left text-sm text-slate-200">
-                <thead>
-                  <tr>
-                    <th className="border-b border-white/10 px-4 py-3 font-medium text-slate-300">Nama Lokasi</th>
-                    <th className="border-b border-white/10 px-4 py-3 font-medium text-slate-300">Kategori</th>
-                    <th className="border-b border-white/10 px-4 py-3 font-medium text-slate-300">Alamat</th>
-                    <th className="border-b border-white/10 px-4 py-3 font-medium text-slate-300">Waktu</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {isLoading ? (
-                    <tr>
-                      <td colSpan="4" className="px-4 py-6 text-center text-slate-500">Memuat data...</td>
-                    </tr>
-                  ) : locations.length === 0 ? (
-                    <tr>
-                      <td colSpan="4" className="px-4 py-6 text-center text-slate-500">Belum ada lokasi tersimpan.</td>
-                    </tr>
-                  ) : (
-                    locations.map((location) => (
-                      <tr key={location.id || `${location.name}-${location.address}`}>
-                        <td className="border-b border-white/10 px-4 py-4">{location.name}</td>
-                        <td className="border-b border-white/10 px-4 py-4">{location.category}</td>
-                        <td className="border-b border-white/10 px-4 py-4">{location.address}</td>
-                        <td className="border-b border-white/10 px-4 py-4 text-slate-400">
-                          {location.created_at
-                            ? new Date(location.created_at).toLocaleString('id-ID', {
-                                day: '2-digit',
-                                month: 'short',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })
-                            : '-'}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   );

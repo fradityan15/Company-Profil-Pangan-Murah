@@ -8,6 +8,7 @@ async function getKatalogData() {
   const { data, error } = await supabase
     .from('products')
     .select('id,name,description,price,stock,category,seller_email')
+    .gt('stock', 0)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -81,7 +82,6 @@ export default async function LiveData() {
                   <span className="text-[10px] bg-green-500/20 text-green-400 px-3 py-1 rounded-full font-black uppercase tracking-widest">
                     {item.discount}
                   </span>
-                  <p className="text-xs text-slate-500 mt-1">{item.category}</p>
                 </div>
               </div>
 

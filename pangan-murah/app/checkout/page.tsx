@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -120,14 +120,27 @@ export default function CheckoutPage() {
       return;
     }
 
-    const { error: stockError } = await supabase
-      .from('products')
-      .update({ stock: product.stock - quantity, available: product.stock - quantity > 0 })
-      .eq('id', product.id);
+    const remainingStock = product.stock - quantity;
 
-    if (stockError) {
-      console.error('Gagal update stok:', stockError.message ?? stockError);
-      // Note: Order sudah dibuat, tapi stok gagal diupdate
+    if (remainingStock <= 0) {
+      const { error: deleteError } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', product.id);
+
+      if (deleteError) {
+        console.error('Gagal menghapus produk:', deleteError.message ?? deleteError);
+      }
+    } else {
+      const { error: stockError } = await supabase
+        .from('products')
+        .update({ stock: remainingStock, available: true })
+        .eq('id', product.id);
+
+      if (stockError) {
+        console.error('Gagal update stok:', stockError.message ?? stockError);
+        // Note: Order sudah dibuat, tapi stok gagal diupdate
+      }
     }
 
     setStatus('success');
