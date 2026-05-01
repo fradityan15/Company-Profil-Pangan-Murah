@@ -35,7 +35,7 @@ export default function Header() {
     <nav className="sticky top-0 z-100 w-full border-b border-white/10 bg-slate-950/95 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto flex h-20 items-center justify-between gap-4 px-6">
         <Link href="/" className="text-2xl font-black tracking-tighter text-white transition-transform hover:scale-105">
-          Pangan<span className="text-cyan-300">Murah</span>
+          Pangan<span className="text-green-400">Murah</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-8 text-sm uppercase tracking-[0.18em] text-slate-300">
