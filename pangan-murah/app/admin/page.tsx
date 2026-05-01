@@ -2,6 +2,37 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/AuthContext';
+import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+const visitorData = [
+  { name: 'Sen', total: 420 },
+  { name: 'Sel', total: 380 },
+  { name: 'Rab', total: 510 },
+  { name: 'Kam', total: 470 },
+  { name: 'Jum', total: 600 },
+  { name: 'Sab', total: 850 },
+  { name: 'Min', total: 780 },
+];
+
+const purchaseData = [
+  { name: 'Sen', total: 240000 },
+  { name: 'Sel', total: 139800 },
+  { name: 'Rab', total: 480000 },
+  { name: 'Kam', total: 390800 },
+  { name: 'Jum', total: 520000 },
+  { name: 'Sab', total: 980000 },
+  { name: 'Min', total: 830000 },
+];
+
+const registrationData = [
+  { name: 'Sen', seller: 4, buyer: 24 },
+  { name: 'Sel', seller: 3, buyer: 13 },
+  { name: 'Rab', seller: 2, buyer: 45 },
+  { name: 'Kam', seller: 5, buyer: 39 },
+  { name: 'Jum', seller: 8, buyer: 48 },
+  { name: 'Sab', seller: 1, buyer: 38 },
+  { name: 'Min', seller: 0, buyer: 43 },
+];
 
 interface AdminUser {
   id: string;
@@ -123,10 +154,6 @@ export default function AdminPage() {
           
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between relative z-10">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400 text-xs font-semibold uppercase tracking-widest mb-6">
-                <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>
-                Pusat Komando
-              </div>
               <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 tracking-tight">
                 Sistem Administrator
               </h1>
@@ -184,6 +211,82 @@ export default function AdminPage() {
               </div>
               <h2 className="text-xl font-bold text-white mb-3">Manajemen Platform</h2>
               <p className="text-sm text-slate-400 leading-relaxed font-light">Evaluasi keseluruhan aktivitas transaksi dan operasional dalam jaringan Pangan Murah.</p>
+            </div>
+          </article>
+        </section>
+
+        {/* Analytics Section */}
+        <section className="grid gap-6 lg:grid-cols-3">
+          {/* Visitor Chart */}
+          <article className="rounded-[2rem] border border-white/5 bg-[#0a0a0a]/80 backdrop-blur-xl p-6 shadow-2xl flex flex-col">
+            <div className="mb-6">
+              <h3 className="text-lg font-bold text-white tracking-tight">Kunjungan Pengguna</h3>
+              <p className="text-xs text-slate-400 font-light mt-1">Aktivitas akses platform harian</p>
+            </div>
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={visitorData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorVisitor" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ec4899" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#ec4899" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                  <XAxis dataKey="name" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '12px', fontSize: '12px' }}
+                    itemStyle={{ color: '#ec4899' }}
+                  />
+                  <Area type="monotone" dataKey="total" stroke="#ec4899" strokeWidth={3} fillOpacity={1} fill="url(#colorVisitor)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </article>
+
+          {/* Purchases Chart */}
+          <article className="rounded-[2rem] border border-white/5 bg-[#0a0a0a]/80 backdrop-blur-xl p-6 shadow-2xl flex flex-col">
+            <div className="mb-6">
+              <h3 className="text-lg font-bold text-white tracking-tight">Transaksi Pembelian</h3>
+              <p className="text-xs text-slate-400 font-light mt-1">Total nilai transaksi (Rp) harian</p>
+            </div>
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={purchaseData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                  <XAxis dataKey="name" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => `Rp${value/1000}k`} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '12px', fontSize: '12px' }}
+                    itemStyle={{ color: '#8b5cf6' }}
+                    formatter={(value: any) => [`Rp ${Number(value).toLocaleString('id-ID')}`, 'Total']}
+                  />
+                  <Bar dataKey="total" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </article>
+
+          {/* Registrations Chart */}
+          <article className="rounded-[2rem] border border-white/5 bg-[#0a0a0a]/80 backdrop-blur-xl p-6 shadow-2xl flex flex-col">
+            <div className="mb-6">
+              <h3 className="text-lg font-bold text-white tracking-tight">Pendaftaran Baru</h3>
+              <p className="text-xs text-slate-400 font-light mt-1">Registrasi Pembeli vs Penjual</p>
+            </div>
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={registrationData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                  <XAxis dataKey="name" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '12px', fontSize: '12px' }}
+                  />
+                  <Line type="monotone" dataKey="buyer" name="Pembeli" stroke="#06b6d4" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                  <Line type="monotone" dataKey="seller" name="Penjual" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </article>
         </section>
