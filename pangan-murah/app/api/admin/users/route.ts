@@ -5,7 +5,7 @@ function parseSession(request: Request) {
   const cookies = request.headers.get('cookie') || '';
   const match = cookies.match(/pangan_session=([^;]+)/);
 
-  if (!match) return null;
+  if (!match || !match[1]) return null;
 
   try {
     return JSON.parse(decodeURIComponent(match[1]));
@@ -29,6 +29,7 @@ export async function GET(request: Request) {
     .order('created_at', { ascending: false });
 
   if (error) {
+    console.error('GET error:', error);
     return NextResponse.json({ error: 'Gagal mengambil data' }, { status: 500 });
   }
 
@@ -58,6 +59,7 @@ export async function PATCH(request: Request) {
     .single();
 
   if (error) {
+    console.error('PATCH error:', error);
     return NextResponse.json({ error: 'Gagal update role' }, { status: 500 });
   }
 

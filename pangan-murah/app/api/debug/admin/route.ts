@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { getSupabase } from '@/lib/supabaseClient';
 
 export async function GET(request: Request) {
   try {
-    // Get semua akun dengan email admin untuk verifikasi
+    const supabase = getSupabase();
+
     const { data, error } = await supabase
       .from('users')
       .select('id,email,full_name,role,created_at')
@@ -15,10 +16,10 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       admin_accounts: data || [],
       total: (data || []).length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (err: any) {
     console.error('Debug admin error:', err);

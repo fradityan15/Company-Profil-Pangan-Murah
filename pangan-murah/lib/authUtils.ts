@@ -2,8 +2,7 @@ import bcrypt from 'bcrypt';
 import { getSupabase } from './supabaseClient';
 
 export async function hashPassword(password: string): Promise<string> {
-  const saltRounds = 10;
-  return bcrypt.hash(password, saltRounds);
+  return bcrypt.hash(password, 10);
 }
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
@@ -26,7 +25,7 @@ export async function registerUser(
       .single();
 
     if (checkError && checkError.code !== 'PGRST116') {
-      throw new Error('Gagal memeriksa email yang sudah ada');
+      throw new Error('Gagal cek email');
     }
 
     if (existingUser) {
@@ -37,35 +36,19 @@ export async function registerUser(
 
     const { data, error } = await supabase
       .from('users')
-      .insert([
-        {
-          email,
-          password_hash: passwordHash,
-          full_name,
-          role,
-        },
-      ])
+      .insert([{ email, password_hash: passwordHash, full_name, role }])
       .select()
       .single();
 
     if (error) {
-      // fallback kalau kolom role belum ada
       if (error.message?.includes('column "role"')) {
         const fallback = await supabase
           .from('users')
-          .insert([
-            {
-              email,
-              password_hash: passwordHash,
-              full_name,
-            },
-          ])
+          .insert([{ email, password_hash: passwordHash, full_name }])
           .select()
           .single();
 
-        if (fallback.error) {
-          throw new Error('Gagal menyimpan data user');
-        }
+        if (fallback.error) throw new Error('Gagal simpan user');
 
         return {
           id: fallback.data.id,
@@ -75,7 +58,7 @@ export async function registerUser(
         };
       }
 
-      throw new Error('Gagal menyimpan data user');
+      throw new Error('Gagal simpan user');
     }
 
     return {
@@ -104,9 +87,9 @@ export async function loginUser(email: string, password: string) {
       throw new Error('Email atau password salah');
     }
 
-    const isValid = await verifyPassword(password, data.password_hash);
+    const valid = await verifyPassword(password, data.password_hash);
 
-    if (!isValid) {
+    if (!valid) {
       throw new Error('Email atau password salah');
     }
 
