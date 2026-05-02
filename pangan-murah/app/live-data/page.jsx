@@ -1,26 +1,48 @@
-export const dynamic = 'force-dynamic'
+'use client';
 
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
+import { useEffect, useState } from 'react';
 
-// Fungsi ambil data produk dari Supabase
-async function getKatalogData() {
-  const { data, error } = await supabase
-    .from('products')
-    .select('id,name,description,price,stock,category,seller_email')
-    .gt('stock', 0)
-    .order('created_at', { ascending: false });
+export default function LiveData() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  if (error) {
-    console.error('Gagal memuat katalog dari Supabase:', error?.message ?? error);
-    return [];
-  }
+  useEffect(() => {
+    async function getKatalogData() {
+      const { data: items, error } = await supabase
+        .from('products')
+        .select('id,name,description,price,stock,category,seller_email')
+        .gt('stock', 0)
+        .order('created_at', { ascending: false });
 
-  return data ?? [];
-}
+      if (error) {
+        console.error('Gagal memuat katalog dari Supabase:', error?.message ?? error);
+      } else {
+        setData(items || []);
+      }
+      setLoading(false);
+    }
 
-export default async function LiveData() {
-  const data = await getKatalogData();
+    getKatalogData();
+
+    // Berlangganan (subscribe) ke perubahan data tabel products secara real-time
+    const channel = supabase
+      .channel('public:products')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'products' },
+        () => {
+          // Ambil ulang data ketika ada yang checkout (update stok / hapus produk)
+          getKatalogData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const fallbackItems = [
     { id: 1, name: 'Roti', desc: 'Koleksi roti dan kue segar dari bakery ternama', price: 'Rp 25.000', discount: '70%', icon: '🥖', category: 'Bakery' },
@@ -31,7 +53,7 @@ export default async function LiveData() {
     { id: 6, name: 'Minuman Segar', desc: 'Jus dan minuman sehat dalam kemasan', price: 'Rp 10.000', discount: '45%', icon: '🥤', category: 'Beverages' },
   ];
 
-  const foodItems = data && data.length > 0
+  const foodItems = !loading && data && data.length > 0
     ? data.map((item) => ({
         id: item.id,
         name: item.name,
@@ -46,91 +68,111 @@ export default async function LiveData() {
     : fallbackItems;
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-slate-200 p-8 md:p-20 font-sans">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#0F172A] text-slate-200 p-6 md:p-12 lg:p-20 font-sans relative overflow-hidden">
+      {/* Subtle background blurs */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none" />
 
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Header Halaman */}
-        <div className="mb-12 animate-fade-in">
-          <div className="flex items-center justify-center gap-3 mb-4">
-          </div>
-          <h1 className="text-4xl md:text-6xl font-black text-white mb-4 text-center">
-            Katalog
+        <div className="mb-16 animate-fade-in text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-6 tracking-tight">
+            Katalog Makanan
           </h1>
-          <p className="text-slate-400 max-w-2xl leading-relaxed text-center mx-auto">
-            Daftar di bawah ini adalah stok makanan surplus terbaru dari mitra Pangan Murah. Data diperbarui secara real-time setiap harinya.
+          <p className="text-slate-400 max-w-2xl leading-relaxed mx-auto text-lg">
+            Temukan dan selamatkan porsi makanan berkualitas dari mitra kami. Stok diperbarui secara instan.
           </p>
         </div>
 
         {/* Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12 animate-fade-in" style={{animationDelay: '0.2s'}}>
-          {['Semua', 'Bakery', 'Restaurant', 'Fresh', 'Snacks'].map((filter) => (
-            <button key={filter} className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm font-medium hover:bg-slate-500/20 hover:border-slate-500/50 transition-all duration-300 hover:scale-105">
+        <div className="flex flex-wrap justify-center gap-3 mb-14 animate-fade-in" style={{animationDelay: '0.2s'}}>
+          {['Semua', 'Bakery', 'Restaurant', 'Fresh', 'Snacks'].map((filter, idx) => (
+            <button key={filter} className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border ${idx === 0 ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white hover:border-white/20'}`}>
               {filter}
             </button>
           ))}
         </div>
 
         {/* Grid Kartu Makanan */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {foodItems.map((item, index) => (
-            <div key={item.id} className="group glass-card p-8 rounded-[2.5rem] border border-white/5 hover:border-slate-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl animate-fade-in" style={{animationDelay: `${0.4 + index * 0.1}s`}}>
-              <div className="flex justify-between items-start mb-6">
-                <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-500 to-slate-500 text-2xl group-hover:scale-110 transition-transform duration-300`}>
-                  {item.icon}
+        {loading ? (
+           <div className="py-20 flex flex-col items-center justify-center gap-4">
+             <div className="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+             <p className="text-slate-400 text-sm font-medium tracking-widest uppercase">Memuat katalog...</p>
+           </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {foodItems.map((item, index) => {
+              // Calculate dynamic progress bar width (max 100%, let's say 20 is max stock visual)
+              const stockPercentage = Math.min(100, ((item.stock || 0) / 20) * 100);
+              
+              return (
+              <div key={item.id} className="group flex flex-col bg-white/[0.02] p-6 lg:p-8 rounded-[2rem] border border-white/5 hover:bg-white/[0.04] hover:border-emerald-500/30 transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-emerald-500/10 animate-fade-in" style={{animationDelay: `${0.4 + index * 0.1}s`}}>
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-white/10 text-2xl group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                    {item.icon}
+                  </div>
+                  <div className="text-right">
+                    <span className="inline-flex items-center text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full font-black uppercase tracking-widest">
+                      {item.discount}
+                    </span>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-[10px] bg-green-500/20 text-green-400 px-3 py-1 rounded-full font-black uppercase tracking-widest">
-                    {item.discount}
-                  </span>
+
+                {/* Judul & Deskripsi */}
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors duration-300 capitalize leading-tight">
+                    {item.name}
+                  </h3>
+                  <p className="text-sm text-slate-400 leading-relaxed mb-6 line-clamp-2">
+                    {item.desc}
+                  </p>
+                </div>
+
+                {/* Price & Button */}
+                <div className="flex items-end justify-between gap-4 pt-4 border-t border-white/5 mb-5">
+                  <div>
+                    <p className="text-xs text-slate-500 mb-1">Harga Khusus</p>
+                    <p className="text-2xl font-black text-emerald-400 tracking-tight">{item.price}</p>
+                  </div>
+                  <Link
+                    href={`/checkout?productId=${encodeURIComponent(item.id)}`}
+                    className="px-6 py-3 bg-emerald-500 text-slate-950 font-black rounded-2xl hover:bg-emerald-400 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/25 flex items-center gap-2"
+                  >
+                    Ambil
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </Link>
+                </div>
+
+                {/* Stock Indicator */}
+                <div className="bg-black/20 rounded-xl p-3 border border-white/5">
+                  <div className="flex items-center justify-between text-xs mb-2 uppercase tracking-widest">
+                    <span className="font-bold text-slate-300">{item.stock ? `${item.stock} porsi tersedia` : 'Stok terbatas'}</span>
+                    <span className="text-slate-500">{item.category}</span>
+                  </div>
+                  <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                    <div 
+                      className="bg-gradient-to-r from-emerald-500 to-cyan-400 h-full rounded-full transition-all duration-1000 ease-out" 
+                      style={{ width: `${stockPercentage}%` }}
+                    ></div>
+                  </div>
                 </div>
               </div>
-
-              {/* Judul & Deskripsi */}
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-white-400 transition-colors duration-300 capitalize">
-                {item.name}
-              </h3>
-              <p className="text-sm text-slate-400 leading-relaxed mb-6 group-hover:text-slate-300 transition-colors duration-300">
-                {item.desc}
-              </p>
-
-              {/* Price & Button */}
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-lg font-black text-white-400">{item.price}</p>
-                  <p className="text-xs text-slate-500 line-through">Rp 50.000</p>
-                </div>
-                <Link
-                  href={`/checkout?productId=${encodeURIComponent(item.id)}`}
-                  className="px-6 py-3 bg-green-500 text-slate-950 font-black rounded-2xl hover:bg-green-400 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-green-500/25"
-                >
-                  Ambil
-                </Link>
-              </div>
-
-              {/* Stock Indicator */}
-              <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-3 text-xs text-slate-400 uppercase tracking-[0.2em]">
-                  <span>{item.stock ? `${item.stock} stok tersedia` : 'Stok terbatas'}</span>
-                  <span className="rounded-full bg-slate-800/70 px-3 py-1 text-[10px] text-slate-300">{item.category}</span>
-                </div>
-                <div className="flex-1 bg-slate-700 rounded-full h-2">
-                  <div className="bg-green-500 h-2 rounded-full w-[75%]"></div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+            )})}
+          </div>
+        )}
 
         {/* Load More Button */}
-        <div className="mt-16 text-center animate-fade-in" style={{animationDelay: '1.0s'}}>
-          <button className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold hover:bg-slate-500/20 hover:border-slate-500/50 transition-all duration-300 hover:scale-105">
-            Muat Lebih Banyak 📦
-          </button>
-        </div>
+        {!loading && (
+          <div className="mt-16 text-center animate-fade-in" style={{animationDelay: '1.0s'}}>
+            <button className="px-8 py-3.5 bg-white/5 border border-white/10 rounded-full text-sm font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-all duration-300 hover:scale-105">
+              Tampilkan Lebih Banyak
+            </button>
+          </div>
+        )}
 
         <div className="mt-16 text-center">
-          <Link href="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-500 transition-all font-bold text-xs uppercase tracking-[0.2em] hover:gap-4">
-            ← Kembali ke Beranda
+          <Link href="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-400 transition-all font-bold text-xs uppercase tracking-[0.2em] group">
+            <span className="group-hover:-translate-x-1 transition-transform">←</span> Kembali ke Beranda
           </Link>
         </div>
       </div>

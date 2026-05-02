@@ -67,6 +67,8 @@ export default function SellerPage() {
     },
   ]);
   const [showAddProduct, setShowAddProduct] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -147,6 +149,7 @@ export default function SellerPage() {
         .from('products')
         .select('id,name,description,price,stock,category,seller_email,seller_id,created_at')
         .eq('seller_id', user.id)
+        .neq('available', false)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -156,6 +159,40 @@ export default function SellerPage() {
     };
     fetchSellerProducts();
   }, [user]);
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus produk ini?')) return;
+    
+    // Gunakan soft-delete agar sinkron dengan riwayat pesanan (orders)
+    // dan menghindari isu policy DELETE pada Supabase RLS.
+    const { error } = await supabase
+      .from('products')
+      .update({ available: false, stock: 0 })
+      .eq('id', productId);
+      
+    if (error) {
+      console.error('Error delete:', error);
+      setMessage('Gagal menghapus produk.');
+    } else {
+      setProducts(products.filter(p => p.id !== productId));
+      setMessage('Produk berhasil dihapus.');
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
+  const startEditProduct = (product: Product) => {
+    setShowAddProduct(true);
+    setIsEditing(true);
+    setEditingProductId(product.id);
+    setFormData({
+      name: product.name,
+      description: product.description || '',
+      price: product.price.toString(),
+      stock: product.stock.toString(),
+      category: product.category || 'roti',
+    });
+    window.scrollTo({ top: 500, behavior: 'smooth' });
+  };
 
   const handleAddProduct = async (e: FormEvent) => {
     e.preventDefault();
@@ -185,30 +222,49 @@ export default function SellerPage() {
       return;
     }
 
-    const { data, error } = await supabase.from('products').insert([{
-      seller_id: user.id,
-      seller_email: user.email,
-      name: formData.name,
-      description: formData.description,
-      price,
-      stock,
-      category: formData.category,
-      available: true,
-    }]).select().single();
+    if (isEditing && editingProductId) {
+      const { data, error } = await supabase.from('products').update({
+        name: formData.name,
+        description: formData.description,
+        price,
+        stock,
+        category: formData.category,
+      }).eq('id', editingProductId).select().single();
 
-    if (error) {
-      console.error('Gagal menyimpan produk:', error.message ?? error);
-      setMessage('Gagal menyimpan produk. Coba lagi.');
-      setSubmitting(false);
-      return;
-    }
+      if (error) {
+        console.error('Gagal update produk:', error.message ?? error);
+        setMessage('Gagal update produk. Coba lagi.');
+      } else if (data) {
+        setProducts(products.map(p => p.id === editingProductId ? data : p));
+        setFormData({ name: '', description: '', price: '', stock: '', category: 'roti' });
+        setShowAddProduct(false);
+        setIsEditing(false);
+        setEditingProductId(null);
+        setMessage('Produk berhasil diperbarui!');
+        setTimeout(() => setMessage(''), 3000);
+      }
+    } else {
+      const { data, error } = await supabase.from('products').insert([{
+        seller_id: user.id,
+        seller_email: user.email,
+        name: formData.name,
+        description: formData.description,
+        price,
+        stock,
+        category: formData.category,
+        available: true,
+      }]).select().single();
 
-    if (data) {
-      setProducts((prev) => [data, ...prev]);
-      setFormData({ name: '', description: '', price: '', stock: '', category: 'roti' });
-      setShowAddProduct(false);
-      setMessage('Produk berhasil ditambahkan ke etalase!');
-      setTimeout(() => setMessage(''), 3000);
+      if (error) {
+        console.error('Gagal menyimpan produk:', error.message ?? error);
+        setMessage('Gagal menyimpan produk. Coba lagi.');
+      } else if (data) {
+        setProducts((prev) => [data, ...prev]);
+        setFormData({ name: '', description: '', price: '', stock: '', category: 'roti' });
+        setShowAddProduct(false);
+        setMessage('Produk berhasil ditambahkan ke etalase!');
+        setTimeout(() => setMessage(''), 3000);
+      }
     }
     setSubmitting(false);
   };
@@ -496,7 +552,14 @@ export default function SellerPage() {
               <p className="mt-2 text-slate-400 font-light">Atur katalog harga, detail barang, dan stok makanan harian.</p>
             </div>
             <button
-              onClick={() => setShowAddProduct(!showAddProduct)}
+              onClick={() => {
+                setShowAddProduct(!showAddProduct);
+                if (showAddProduct) {
+                   setIsEditing(false);
+                   setEditingProductId(null);
+                   setFormData({ name: '', description: '', price: '', stock: '', category: 'roti' });
+                }
+              }}
               className="rounded-full bg-blue-500 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-400 flex items-center gap-2 hover:shadow-lg hover:shadow-blue-500/20"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
@@ -513,7 +576,7 @@ export default function SellerPage() {
 
           {showAddProduct && (
             <form onSubmit={handleAddProduct} className="mb-10 rounded-3xl bg-white/[0.02] p-8 border border-white/5 shadow-inner space-y-6 animate-in slide-in-from-top-4 duration-300">
-              <h3 className="text-lg font-bold text-white border-b border-white/5 pb-4">Rincian Barang Baru</h3>
+              <h3 className="text-lg font-bold text-white border-b border-white/5 pb-4">{isEditing ? 'Edit Rincian Barang' : 'Rincian Barang Baru'}</h3>
               
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
@@ -576,11 +639,16 @@ export default function SellerPage() {
                   disabled={submitting}
                   className="rounded-full bg-blue-500 px-8 py-3 text-sm font-bold text-white hover:bg-blue-400 disabled:opacity-50 transition-colors"
                 >
-                  {submitting ? 'Menyimpan...' : 'Simpan Produk'}
+                  {submitting ? 'Menyimpan...' : (isEditing ? 'Update Produk' : 'Simpan Produk')}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowAddProduct(false)}
+                  onClick={() => {
+                     setShowAddProduct(false);
+                     setIsEditing(false);
+                     setEditingProductId(null);
+                     setFormData({ name: '', description: '', price: '', stock: '', category: 'roti' });
+                  }}
                   className="rounded-full bg-white/5 border border-white/10 px-8 py-3 text-sm font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-colors"
                   disabled={submitting}
                 >
@@ -614,10 +682,10 @@ export default function SellerPage() {
                   <div className="mt-auto">
                     <p className="text-2xl font-black text-white mb-5">Rp {product.price.toLocaleString('id-ID')}</p>
                     <div className="flex gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
-                      <button className="flex-1 rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-colors">
+                      <button onClick={() => startEditProduct(product)} className="flex-1 rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-colors">
                         Edit
                       </button>
-                      <button className="flex-1 rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2.5 text-xs font-bold text-rose-400 hover:bg-rose-500/20 hover:text-rose-300 transition-colors">
+                      <button onClick={() => handleDeleteProduct(product.id)} className="flex-1 rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2.5 text-xs font-bold text-rose-400 hover:bg-rose-500/20 hover:text-rose-300 transition-colors">
                         Hapus
                       </button>
                     </div>
