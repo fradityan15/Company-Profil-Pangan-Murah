@@ -30,6 +30,7 @@ export default function CheckoutPage() {
   const [fetchError, setFetchError] = useState('');
   const [showOverlay, setShowOverlay] = useState(false);
   const [overlayState, setOverlayState] = useState<'loading' | 'success'>('loading');
+  const [qrCodeData, setQrCodeData] = useState<string | null>(null);
 
   useEffect(() => {
     const urlProductId = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('productId') : null;
@@ -40,6 +41,11 @@ export default function CheckoutPage() {
     const fetchProduct = async () => {
       if (!productId) {
         setFetchError('Produk tidak dipilih. Kembali ke katalog.');
+        return;
+      }
+
+      if (!supabase) {
+        setFetchError('Koneksi database tidak tersedia.');
         return;
       }
 
@@ -73,6 +79,7 @@ export default function CheckoutPage() {
 
   const handleQuantityChange = (value: number) => {
     if (!product) return;
+    if (status === 'loading' || status === 'success') return;
     if (value < 1) return;
     if (value > product.stock) {
       setMessage(`Stok maksimal ${product.stock} item.`);
@@ -103,9 +110,40 @@ export default function CheckoutPage() {
     setStatus('loading');
     setMessage('Memproses pesanan...');
 
-    const totalPrice = product.price * quantity;
+    if (!supabase) {
+      setMessage('Koneksi database tidak tersedia.');
+      setShowOverlay(false);
+      setStatus('error');
+      return;
+    }
 
-    const { error: orderError } = await supabase.from('orders').insert([{
+    // 3. Cegah race condition stok: Fetch stok terbaru langsung dari DB sebelum validasi final
+    const { data: latestProduct, error: fetchStockError } = await supabase
+      .from('products')
+      .select('stock')
+      .eq('id', product.id)
+      .single();
+
+    if (fetchStockError || !latestProduct) {
+      console.error('Gagal mengecek stok terbaru:', fetchStockError?.message ?? 'Not found');
+      setShowOverlay(false);
+      setStatus('error');
+      setMessage('Gagal memverifikasi stok. Silakan coba lagi.');
+      return;
+    }
+
+    if (latestProduct.stock < quantity) {
+      setShowOverlay(false);
+      setStatus('error');
+      setMessage(`Mohon maaf, stok tidak mencukupi. Stok tersisa: ${latestProduct.stock}`);
+      setProduct({ ...product, stock: latestProduct.stock });
+      return;
+    }
+
+    const totalPrice = product.price * quantity;
+    const generatedQrData = `PanganMurah-${product.id}-${user.id}-${Date.now()}-${totalPrice}`;
+
+    const { data: orderData, error: orderError } = await supabase.from('orders').insert([{
       buyer_id: user.id,
       buyer_email: user.email,
       product_id: product.id,
@@ -115,6 +153,7 @@ export default function CheckoutPage() {
       status: 'pending',
       payment_method: 'QRIS',
       payment_status: 'waiting',
+      qr_code: generatedQrData
     }]).select().single();
 
     if (orderError) {
@@ -125,27 +164,22 @@ export default function CheckoutPage() {
       return;
     }
 
-    const remainingStock = product.stock - quantity;
-
-    if (remainingStock <= 0) {
-      const { error: deleteError } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', product.id);
-
-      if (deleteError) {
-        console.error('Gagal menghapus produk:', deleteError.message ?? deleteError);
-      }
+    if (orderData && orderData.qr_code) {
+      setQrCodeData(orderData.qr_code);
     } else {
-      const { error: stockError } = await supabase
-        .from('products')
-        .update({ stock: remainingStock, available: true })
-        .eq('id', product.id);
+      setQrCodeData(generatedQrData);
+    }
 
-      if (stockError) {
-        console.error('Gagal update stok:', stockError.message ?? stockError);
-        // Note: Order sudah dibuat, tapi stok gagal diupdate
-      }
+    const remainingStock = latestProduct.stock - quantity;
+
+    const { error: stockError } = await supabase
+      .from('products')
+      .update({ stock: remainingStock, available: remainingStock > 0 })
+      .eq('id', product.id);
+
+    if (stockError) {
+      console.error('Gagal update stok:', stockError.message ?? stockError);
+      setMessage('Pesanan berhasil dibuat, tetapi gagal memperbarui stok di server.');
     }
 
     setOverlayState('success');
@@ -153,11 +187,16 @@ export default function CheckoutPage() {
     setTimeout(() => {
       setShowOverlay(false);
       setStatus('success');
-      setMessage('Pesanan berhasil dibuat! QRIS akan muncul untuk pembayaran.');
+      setMessage('Pesanan berhasil dibuat! Mengalihkan ke halaman pembayaran...');
+      
+      setTimeout(() => {
+        if (orderData && orderData.id) {
+          router.push(`/payment?order_id=${orderData.id}`);
+        } else {
+          router.push('/payment');
+        }
+      }, 2000);
     }, 1500);
-
-    // Generate QR code data
-    const qrData = `PanganMurah-${product.id}-${user.id}-${Date.now()}-${totalPrice}`;
   };
 
   if (fetchError) {
@@ -183,7 +222,6 @@ export default function CheckoutPage() {
   }
 
   const totalPrice = product.price * quantity;
-  const qrData = `PanganMurah-${product.id}-${user?.id || 'guest'}-${Date.now()}-${totalPrice}`;
 
   return (
     <div className="min-h-screen bg-[#050505] text-slate-100 relative overflow-hidden selection:bg-cyan-500/30">
@@ -267,7 +305,7 @@ export default function CheckoutPage() {
                       <button
                         onClick={() => handleQuantityChange(quantity - 1)}
                         className="flex h-10 w-10 items-center justify-center rounded-lg bg-transparent text-slate-300 hover:bg-white/5 hover:text-white transition disabled:opacity-30"
-                        disabled={quantity <= 1}
+                        disabled={quantity <= 1 || status === 'loading' || status === 'success'}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/></svg>
                       </button>
@@ -275,14 +313,15 @@ export default function CheckoutPage() {
                         type="number"
                         value={quantity}
                         onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
-                        className="w-14 bg-transparent text-center text-lg font-bold text-white outline-none"
+                        className="w-14 bg-transparent text-center text-lg font-bold text-white outline-none disabled:opacity-50"
                         min="1"
                         max={product.stock}
+                        disabled={status === 'loading' || status === 'success'}
                       />
                       <button
                         onClick={() => handleQuantityChange(quantity + 1)}
                         className="flex h-10 w-10 items-center justify-center rounded-lg bg-transparent text-slate-300 hover:bg-white/5 hover:text-white transition disabled:opacity-30"
-                        disabled={quantity >= product.stock}
+                        disabled={quantity >= product.stock || status === 'loading' || status === 'success'}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                       </button>
@@ -330,13 +369,15 @@ export default function CheckoutPage() {
                 </span>
               </button>
 
-              {message && status === 'error' && (
-                <p className="mt-4 text-center text-sm font-medium text-rose-400 bg-rose-500/10 py-2 px-3 rounded-lg border border-rose-500/20">{message}</p>
+              {message && (status === 'error' || status === 'success') && (
+                <p className={`mt-4 text-center text-sm font-medium py-2 px-3 rounded-lg border ${status === 'error' ? 'text-rose-400 bg-rose-500/10 border-rose-500/20' : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'}`}>
+                  {message}
+                </p>
               )}
             </div>
 
             {/* QRIS Payment */}
-            {status === 'success' && (
+            {status === 'success' && qrCodeData && (
               <div className="rounded-[2rem] border border-cyan-500/30 bg-cyan-500/5 p-6 shadow-[0_0_40px_rgba(6,182,212,0.15)] backdrop-blur-xl text-center">
                 <div className="inline-flex items-center justify-center gap-2 text-cyan-400 text-[11px] font-bold uppercase tracking-widest mb-5 bg-cyan-500/10 px-3 py-1.5 rounded-full border border-cyan-500/20">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
@@ -346,7 +387,7 @@ export default function CheckoutPage() {
                 <div className="bg-white rounded-2xl p-3 mx-auto w-fit mb-5 shadow-2xl relative">
                   <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400/20 to-emerald-400/20 rounded-2xl blur-lg -z-10"></div>
                   <Image
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(qrData)}`}
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(qrCodeData)}`}
                     alt="QRIS Pangan Murah"
                     width={160}
                     height={160}
@@ -362,7 +403,7 @@ export default function CheckoutPage() {
                 
                 <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-4 mt-2">
                   <p className="text-sm text-cyan-100 leading-relaxed">
-                    <span className="font-bold text-cyan-400">Petunjuk:</span> Tunjukkan dan scan QRIS ini di kasir untuk membayar dan ambil makanan di toko pilihan kamu.
+                    <span className="font-bold text-cyan-400">Mengalihkan...</span> Silakan selesaikan pembayaran di halaman berikutnya.
                   </p>
                 </div>
               </div>

@@ -13,6 +13,7 @@ create table if not exists public.orders (
   status text not null default 'pending',
   payment_method text not null default 'QRIS',
   payment_status text not null default 'waiting',
+  qr_code text,
   created_at timestamptz not null default now()
 );
 

@@ -95,6 +95,12 @@ export default function SellerPage() {
     setIsLoadingRescue(true);
     setRescueError('');
 
+    if (!supabase) {
+      setRescueError('Koneksi database tidak tersedia.');
+      setIsLoadingRescue(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('rescue_locations')
       .select('*')
@@ -120,6 +126,13 @@ export default function SellerPage() {
     }
 
     setIsSavingRescue(true);
+    
+    if (!supabase) {
+      setRescueError('Koneksi database tidak tersedia.');
+      setIsSavingRescue(false);
+      return;
+    }
+
     const { error } = await supabase.from('rescue_locations').insert([
       {
         name: rescueForm.name,
@@ -145,6 +158,8 @@ export default function SellerPage() {
   useEffect(() => {
     const fetchSellerProducts = async () => {
       if (!user?.id) return;
+      if (!supabase) return;
+      
       const { data, error } = await supabase
         .from('products')
         .select('id,name,description,price,stock,category,seller_email,seller_id,created_at')
@@ -163,6 +178,11 @@ export default function SellerPage() {
   const handleDeleteProduct = async (productId: string) => {
     if (!confirm('Apakah Anda yakin ingin menghapus produk ini?')) return;
     
+    if (!supabase) {
+      setMessage('Koneksi database tidak tersedia.');
+      return;
+    }
+
     // Gunakan soft-delete agar sinkron dengan riwayat pesanan (orders)
     // dan menghindari isu policy DELETE pada Supabase RLS.
     const { error } = await supabase
@@ -223,6 +243,7 @@ export default function SellerPage() {
     }
 
     if (isEditing && editingProductId) {
+      if (!supabase) return;
       const { data, error } = await supabase.from('products').update({
         name: formData.name,
         description: formData.description,
@@ -244,6 +265,7 @@ export default function SellerPage() {
         setTimeout(() => setMessage(''), 3000);
       }
     } else {
+      if (!supabase) return;
       const { data, error } = await supabase.from('products').insert([{
         seller_id: user.id,
         seller_email: user.email,

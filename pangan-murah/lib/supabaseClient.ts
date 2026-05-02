@@ -1,12 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// ❌ JANGAN pakai ! di sini
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// untuk CLIENT (React)
-export const supabase = createClient(url, key);
+// ✅ CLIENT (React)
+export const supabase =
+  url && key ? createClient(url, key) : null;
 
-// untuk SERVER (API)
+// ✅ SERVER (API)
 export function getSupabase() {
   if (!url || !key) {
     throw new Error('Supabase env missing');
