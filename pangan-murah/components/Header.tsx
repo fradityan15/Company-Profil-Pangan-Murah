@@ -40,7 +40,7 @@ export default function Header() {
 
         <div className="hidden md:flex items-center gap-8 text-sm uppercase tracking-[0.18em] text-slate-300">
           {menuLinks.map((item) => (
-            <Link key={item.href} href={item.href} className="transition-colors hover:text-cyan-300">
+            <Link key={item.href} href={item.href} className="transition-colors hover:text-slate-300">
               {item.label}
             </Link>
           ))}

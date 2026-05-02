@@ -46,10 +46,6 @@ export default function BuyerPage() {
         <section className="relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-gradient-to-b from-white/[0.04] to-transparent p-10 md:p-14 shadow-2xl backdrop-blur-xl">
           <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
-              <span className="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/20">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                Dashboard Pembeli
-              </span>
               <h1 className="mt-6 text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-slate-400 md:text-6xl tracking-tight leading-tight">
                 Halo, {user.full_name?.split(' ')[0] || user.email.split('@')[0]}!
               </h1>

@@ -76,7 +76,7 @@ export default function LiveData() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header Halaman */}
         <div className="mb-16 animate-fade-in text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-6 tracking-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-6 tracking-tight pb-2">
             Katalog Makanan
           </h1>
           <p className="text-slate-400 max-w-2xl leading-relaxed mx-auto text-lg">

@@ -29,17 +29,17 @@ export default function RootLayout({
           <footer className="border-t border-white/5 bg-[#010409] py-12">
             <div className="max-w-7xl mx-auto px-6 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
               <div>
-                <div className="text-2xl font-black">Pangan<span className="text-cyan-400">Murah</span></div>
+                <div className="text-2xl font-black">Pangan<span className="text-green-400">Murah</span></div>
                 <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-500">
                   Mendukung pembeli dan penjual dengan solusi pangan hemat serta berkelanjutan di Indonesia.
                 </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
-                <a href="/live-data" className="transition hover:text-cyan-300">Katalog</a>
-                <a href="/map" className="transition hover:text-cyan-300">Peta</a>
-                <a href="/about" className="transition hover:text-cyan-300">Tentang</a>
-                <a href="/contact" className="transition hover:text-cyan-300">Kontak</a>
+                <a href="/live-data" className="transition hover:text-slate-300">Katalog</a>
+                <a href="/map" className="transition hover:text-slate-300">Peta</a>
+                <a href="/about" className="transition hover:text-slate-300">Tentang</a>
+                <a href="/contact" className="transition hover:text-slate-300">Kontak</a>
               </div>
             </div>
 
