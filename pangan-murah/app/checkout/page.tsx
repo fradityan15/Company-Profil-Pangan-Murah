@@ -187,15 +187,7 @@ export default function CheckoutPage() {
     setTimeout(() => {
       setShowOverlay(false);
       setStatus('success');
-      setMessage('Pesanan berhasil dibuat! Mengalihkan ke halaman pembayaran...');
-      
-      setTimeout(() => {
-        if (orderData && orderData.id) {
-          router.push(`/payment?order_id=${orderData.id}`);
-        } else {
-          router.push('/payment');
-        }
-      }, 2000);
+      setMessage('Pesanan berhasil dibuat! Silakan scan QRIS di bawah ini untuk membayar.');
     }, 1500);
   };
 
@@ -403,7 +395,7 @@ export default function CheckoutPage() {
                 
                 <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-4 mt-2">
                   <p className="text-sm text-cyan-100 leading-relaxed">
-                    <span className="font-bold text-cyan-400">Mengalihkan...</span> Silakan selesaikan pembayaran di halaman berikutnya.
+                    <span className="font-bold text-cyan-400">Menunggu Pembayaran...</span> Silakan scan QRIS di atas menggunakan aplikasi e-wallet atau mobile banking Anda. Setelah sukses, pesanan akan diproses.
                   </p>
                 </div>
               </div>
