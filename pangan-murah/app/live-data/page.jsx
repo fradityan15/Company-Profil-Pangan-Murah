@@ -3,9 +3,12 @@
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useEffect, useState } from 'react';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
 export default function LiveData() {
   const [data, setData] = useState([]);
+  const [error, setError] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -67,6 +70,12 @@ export default function LiveData() {
       }))
     : fallbackItems;
 
+  const filteredFoodItems = searchTerm
+    ? foodItems.filter((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : foodItems;
+
   return (
     <div className="min-h-screen bg-[#0F172A] text-slate-200 p-6 md:p-12 lg:p-20 font-sans relative overflow-hidden">
       {/* Subtle background blurs */}
@@ -79,9 +88,16 @@ export default function LiveData() {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-6 tracking-tight pb-2">
             Katalog Makanan
           </h1>
-          <p className="text-slate-400 max-w-2xl leading-relaxed mx-auto text-lg">
+          <p className="text-slate-400 max-w-2xl leading-relaxed mx-auto text-lg mb-8">
             Temukan dan selamatkan porsi makanan berkualitas dari mitra kami. Stok diperbarui secara instan.
           </p>
+          <input
+            type="text"
+            placeholder="Cari makanan..."
+            className="px-6 py-3 rounded-full bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 w-full max-w-md transition-all"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
 
         {/* Filter Buttons */}
@@ -101,7 +117,7 @@ export default function LiveData() {
            </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {foodItems.map((item, index) => {
+            {filteredFoodItems.map((item, index) => {
               // Calculate dynamic progress bar width (max 100%, let's say 20 is max stock visual)
               const stockPercentage = Math.min(100, ((item.stock || 0) / 20) * 100);
               
