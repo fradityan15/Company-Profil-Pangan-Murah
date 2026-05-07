@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useAuth } from '@/lib/AuthContext';
 
 interface MobileMenuProps {
   user?: {
@@ -11,6 +12,13 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ user }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    setIsOpen(false);
+    window.location.href = '/login';
+  };
 
   const menuLinks = [
     { href: '/', label: 'Beranda' },
@@ -18,11 +26,11 @@ export default function MobileMenu({ user }: MobileMenuProps) {
   ];
 
   if (user?.role === 'seller') {
-    menuLinks.push({ href: '/seller', label: 'Penjual' });
+    menuLinks.push({ href: '/penjual', label: 'Penjual' });
   }
 
   if (user?.role === 'buyer') {
-    menuLinks.push({ href: '/buyer', label: 'Pembeli' });
+    menuLinks.push({ href: '/pembeli', label: 'Pembeli' });
   }
 
   if (user?.role === 'admin') {
@@ -70,7 +78,7 @@ export default function MobileMenu({ user }: MobileMenuProps) {
               Cari Lokasi
             </Link>
 
-            {!user && (
+            {!user ? (
               <div className="grid gap-2">
                 <Link
                   href="/login"
@@ -87,6 +95,13 @@ export default function MobileMenu({ user }: MobileMenuProps) {
                   Daftar
                 </Link>
               </div>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-slate-100 transition hover:bg-white/10 mt-2"
+              >
+                Logout
+              </button>
             )}
           </div>
         </div>

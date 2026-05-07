@@ -20,11 +20,11 @@ export default function Header() {
   ];
 
   if (user?.role === 'seller') {
-    menuLinks.push({ href: '/seller', label: 'Penjual' });
+    menuLinks.push({ href: '/penjual', label: 'Penjual' });
   }
 
   if (user?.role === 'buyer') {
-    menuLinks.push({ href: '/buyer', label: 'Pembeli' });
+    menuLinks.push({ href: '/pembeli', label: 'Pembeli' });
   }
 
   if (user?.role === 'admin') {

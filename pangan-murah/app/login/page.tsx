@@ -34,8 +34,18 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      await login(formData.email, formData.password);
-      router.push('/');
+      const user = await login(formData.email, formData.password);
+      const role = user?.role;
+      
+      if (role === 'admin') {
+        window.location.href = '/admin';
+      } else if (role === 'seller') {
+        window.location.href = '/penjual';
+      } else if (role === 'buyer') {
+        window.location.href = '/pembeli';
+      } else {
+        window.location.href = '/';
+      }
     } catch (err: any) {
       setError(err.message || 'Login gagal');
     } finally {
