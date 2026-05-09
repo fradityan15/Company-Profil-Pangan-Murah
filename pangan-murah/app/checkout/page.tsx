@@ -395,7 +395,7 @@ export default function CheckoutPage() {
                 
                 <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-4 mt-2">
                   <p className="text-sm text-cyan-100 leading-relaxed">
-                    <span className="font-bold text-cyan-400">Menunggu Pembayaran...</span> Silakan scan QRIS di atas menggunakan aplikasi e-wallet atau mobile banking Anda. Setelah sukses, pesanan akan diproses.
+                    Tunjukkan QRIS di atas kepada kasir untuk membayar dan mengambil makanan.
                   </p>
                 </div>
               </div>
