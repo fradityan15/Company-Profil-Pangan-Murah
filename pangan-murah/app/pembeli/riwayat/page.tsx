@@ -21,6 +21,7 @@ export default function RiwayatPembelian() {
 
     const fetchRiwayat = async () => {
       try {
+        if (!supabase) throw new Error('Supabase client is not initialized');
         const { data, error } = await supabase
           .from('orders')
           .select('*')
