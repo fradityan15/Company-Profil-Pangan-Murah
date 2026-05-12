@@ -23,19 +23,13 @@ export default function MobileMenu({ user }: MobileMenuProps) {
   const menuLinks = [
     { href: '/', label: 'Beranda' },
     { href: '/live-data', label: 'Katalog' },
+    { href: '/about', label: 'Tentang' },
+    { href: '/contact', label: 'Kontak' },
   ];
 
-  if (user?.role === 'seller') {
-    menuLinks.push({ href: '/penjual', label: 'Penjual' });
-  }
-
-  if (user?.role === 'buyer') {
-    menuLinks.push({ href: '/pembeli', label: 'Pembeli' });
-  }
-
-  if (user?.role === 'admin') {
-    menuLinks.push({ href: '/admin', label: 'Admin' });
-  }
+  const userIconLink = user ? (
+    user.role === 'seller' ? '/penjual' : user.role === 'buyer' ? '/pembeli' : '/admin'
+  ) : '/login';
 
   return (
     <div className="md:hidden">
@@ -70,38 +64,60 @@ export default function MobileMenu({ user }: MobileMenuProps) {
               </Link>
             ))}
 
-            <Link
-              href="/map"
-              className="rounded-2xl bg-cyan-400 px-4 py-3 text-slate-950 transition hover:bg-cyan-300"
-              onClick={() => setIsOpen(false)}
-            >
-              Cari Lokasi
-            </Link>
+            {!user ? (
+              <Link
+                href="/register"
+                className="rounded-2xl bg-cyan-400 px-4 py-3 text-slate-950 transition hover:bg-cyan-300 font-semibold"
+                onClick={() => setIsOpen(false)}
+              >
+                Daftar
+              </Link>
+            ) : (
+              <Link
+                href="/map"
+                className="rounded-2xl bg-cyan-400 px-4 py-3 text-slate-950 transition hover:bg-cyan-300 font-semibold"
+                onClick={() => setIsOpen(false)}
+              >
+                Cari Lokasi
+              </Link>
+            )}
 
             {!user ? (
               <div className="grid gap-2">
                 <Link
                   href="/login"
-                  className="rounded-2xl border border-white/10 bg-slate-900/80 px-4 py-3 text-center transition hover:bg-slate-800"
+                  className="rounded-2xl bg-green-500 px-4 py-3 text-center text-slate-950 font-semibold transition hover:bg-green-400"
                   onClick={() => setIsOpen(false)}
                 >
                   Login
                 </Link>
-                <Link
-                  href="/register"
-                  className="rounded-2xl bg-cyan-500 px-4 py-3 text-center text-slate-950 transition hover:bg-cyan-300"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Daftar
-                </Link>
               </div>
             ) : (
-              <button
-                onClick={handleLogout}
-                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-slate-100 transition hover:bg-white/10 mt-2"
-              >
-                Logout
-              </button>
+              <div className="flex flex-col gap-2 mt-2 border-t border-white/10 pt-4">
+                <span className="text-sm uppercase tracking-[0.18em] text-slate-400 mb-2">Akun</span>
+                <Link
+                  href={userIconLink}
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-2xl bg-slate-900/80 px-4 py-3 transition hover:bg-cyan-500/10"
+                >
+                  Profil
+                </Link>
+                {user.role === 'buyer' && (
+                  <Link
+                    href="/pembeli/riwayat"
+                    onClick={() => setIsOpen(false)}
+                    className="rounded-2xl bg-slate-900/80 px-4 py-3 transition hover:bg-cyan-500/10"
+                  >
+                    Riwayat Pembelian
+                  </Link>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left text-red-400 transition hover:bg-red-500/10 hover:border-red-500/50"
+                >
+                  Logout
+                </button>
+              </div>
             )}
           </div>
         </div>

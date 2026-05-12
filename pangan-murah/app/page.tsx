@@ -17,7 +17,7 @@ export default function Home() {
           </h1>
 
           <p className="mt-8 max-w-2xl text-base leading-8 text-white-400 sm:text-lg animate-pop-in animate-pop-in-delay-2">
-            Temukan makanan surplus berkualitas dengan harga murah sambil membantu mengurangi limbah pangan. Aksi kecilmu berarti manfaat besar bagi komunitas dan lingkungan.
+            Temukan makanan berkualitas dengan harga murah sambil membantu mengurangi limbah pangan. Aksi kecilmu berarti manfaat besar bagi komunitas dan lingkungan.
           </p>
 
           <div className="mt-12 flex flex-col items-center gap-5 sm:flex-row sm:justify-center animate-pop-in animate-pop-in-delay-3">

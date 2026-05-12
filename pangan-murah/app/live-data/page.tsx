@@ -10,7 +10,7 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
   // Query Supabase dengan filter .ilike() jika ada parameter pencarian
   let supabaseQuery = supabase
     .from('products')
-    .select('id,name,description,price,stock,category,seller_email')
+    .select('*')
     .gt('stock', 0)
     .order('created_at', { ascending: false });
 
@@ -73,52 +73,73 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
           {formattedItems.map((item, index) => {
             const stockPercentage = Math.min(100, ((item.stock || 0) / 20) * 100);
             
+            // Map kategori ke gambar statis berkualitas tinggi
+            const categoryImages: Record<string, string> = {
+              'Bakery': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=600&auto=format&fit=crop',
+              'Restaurant': 'https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=600&auto=format&fit=crop',
+              'Fresh': 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?q=80&w=600&auto=format&fit=crop',
+              'Snacks': 'https://images.unsplash.com/photo-1599490659213-e2b9527bd08c?q=80&w=600&auto=format&fit=crop',
+            };
+            
+            const imageUrl = item.image_url || categoryImages[item.category] || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop';
+            
             return (
-            <div key={item.id} className="group flex flex-col bg-white/[0.02] p-6 lg:p-8 rounded-[2rem] border border-white/5 hover:bg-white/[0.04] hover:border-emerald-500/30 transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-emerald-500/10">
-              <div className="flex justify-between items-start mb-6">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-white/10 text-2xl group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                  {item.icon}
-                </div>
-                <div className="text-right">
-                  <span className="inline-flex items-center text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full font-black uppercase tracking-widest">
+            <div key={item.id} className="group flex flex-col bg-white/[0.02] rounded-[2rem] border border-white/5 hover:bg-white/[0.04] hover:border-emerald-500/30 transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-emerald-500/10 overflow-hidden">
+              {/* Image Section */}
+              <div className="relative h-56 w-full bg-slate-800 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={imageUrl}
+                  alt={item.name} 
+                  className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
+                <div className="absolute top-4 right-4 z-10">
+                  <span className="inline-flex items-center text-[10px] bg-emerald-500 text-slate-950 font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
                     {item.discount}
                   </span>
                 </div>
+                <div className="absolute top-4 left-4 z-10 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900/80 backdrop-blur-md border border-white/10 text-2xl shadow-lg">
+                  {item.icon}
+                </div>
+                <div className="absolute bottom-4 left-4 right-4 z-10">
+                   <h3 className="text-2xl font-bold text-white group-hover:text-emerald-300 transition-colors duration-300 capitalize leading-tight drop-shadow-md">
+                    {item.name}
+                  </h3>
+                </div>
               </div>
 
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors duration-300 capitalize leading-tight">
-                  {item.name}
-                </h3>
-                <p className="text-sm text-slate-400 leading-relaxed mb-6 line-clamp-2">
+              {/* Content Section */}
+              <div className="p-6 lg:p-8 flex flex-col flex-1">
+                <p className="text-sm text-slate-400 leading-relaxed mb-6 line-clamp-2 flex-1">
                   {item.description}
                 </p>
-              </div>
 
-              <div className="flex items-end justify-between gap-4 pt-4 border-t border-white/5 mb-5">
-                <div>
-                  <p className="text-xs text-slate-500 mb-1">Harga Khusus</p>
-                  <p className="text-2xl font-black text-emerald-400 tracking-tight">{item.formattedPrice}</p>
+                <div className="flex items-end justify-between gap-4 pt-4 border-t border-white/5 mb-5">
+                  <div>
+                    <p className="text-xs text-slate-500 mb-1">Harga Khusus</p>
+                    <p className="text-2xl font-black text-emerald-400 tracking-tight">{item.formattedPrice}</p>
+                  </div>
+                  <Link
+                    href={`/checkout?productId=${encodeURIComponent(item.id)}`}
+                    className="px-6 py-3 bg-emerald-500 text-slate-950 font-black rounded-2xl hover:bg-emerald-400 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/25 flex items-center gap-2"
+                  >
+                    Ambil
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </Link>
                 </div>
-                <Link
-                  href={`/checkout?productId=${encodeURIComponent(item.id)}`}
-                  className="px-6 py-3 bg-emerald-500 text-slate-950 font-black rounded-2xl hover:bg-emerald-400 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/25 flex items-center gap-2"
-                >
-                  Ambil
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </Link>
-              </div>
 
-              <div className="bg-black/20 rounded-xl p-3 border border-white/5">
-                <div className="flex items-center justify-between text-xs mb-2 uppercase tracking-widest">
-                  <span className="font-bold text-slate-300">{item.stock ? `${item.stock} porsi tersedia` : 'Stok terbatas'}</span>
-                  <span className="text-slate-500">{item.category}</span>
-                </div>
-                <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-                  <div 
-                    className="bg-gradient-to-r from-emerald-500 to-cyan-400 h-full rounded-full transition-all duration-1000 ease-out" 
-                    style={{ width: `${stockPercentage}%` }}
-                  ></div>
+                <div className="bg-black/20 rounded-xl p-3 border border-white/5">
+                  <div className="flex items-center justify-between text-xs mb-2 uppercase tracking-widest">
+                    <span className="font-bold text-slate-300">{item.stock ? `${item.stock} porsi tersedia` : 'Stok terbatas'}</span>
+                    <span className="text-slate-500">{item.category}</span>
+                  </div>
+                  <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                    <div 
+                      className="bg-gradient-to-r from-emerald-500 to-cyan-400 h-full rounded-full transition-all duration-1000 ease-out" 
+                      style={{ width: `${stockPercentage}%` }}
+                    ></div>
+                  </div>
                 </div>
               </div>
             </div>

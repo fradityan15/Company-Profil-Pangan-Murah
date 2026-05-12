@@ -11,6 +11,10 @@ export function middleware(request: NextRequest) {
 
   // Daftar rute yang DIKECUALIKAN dari proteksi (Public Routes)
   const isPublicRoute = 
+    pathname === '/' ||
+    pathname.startsWith('/dashboard') ||
+    pathname.startsWith('/about') ||
+    pathname.startsWith('/contact') ||
     pathname.startsWith('/login') || 
     pathname.startsWith('/register') || 
     pathname.startsWith('/api/auth');

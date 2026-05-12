@@ -14,6 +14,7 @@ interface Product {
   seller_email: string;
   seller_id: string;
   created_at: string;
+  image_url?: string;
 }
 
 interface Order {
@@ -75,7 +76,10 @@ export default function SellerPage() {
     price: '',
     stock: '',
     category: 'roti',
+    image_url: '',
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   
@@ -162,7 +166,7 @@ export default function SellerPage() {
       
       const { data, error } = await supabase
         .from('products')
-        .select('id,name,description,price,stock,category,seller_email,seller_id,created_at')
+        .select('*')
         .eq('seller_id', user.id)
         .neq('available', false)
         .order('created_at', { ascending: false });
@@ -210,7 +214,10 @@ export default function SellerPage() {
       price: product.price.toString(),
       stock: product.stock.toString(),
       category: product.category || 'roti',
+      image_url: product.image_url || '',
     });
+    setImageFile(null);
+    setImagePreview(product.image_url || null);
     window.scrollTo({ top: 500, behavior: 'smooth' });
   };
 
@@ -242,6 +249,32 @@ export default function SellerPage() {
       return;
     }
 
+    let uploadedImageUrl = formData.image_url;
+
+    if (imageFile) {
+      if (!supabase) return;
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(filePath, imageFile);
+        
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        setMessage('Gagal mengunggah foto. Pastikan pengaturan bucket Storage sudah benar.');
+        setSubmitting(false);
+        return;
+      }
+      
+      const { data: publicUrlData } = supabase.storage
+        .from('products')
+        .getPublicUrl(filePath);
+        
+      uploadedImageUrl = publicUrlData.publicUrl;
+    }
+
     if (isEditing && editingProductId) {
       if (!supabase) return;
       const { data, error } = await supabase.from('products').update({
@@ -250,19 +283,24 @@ export default function SellerPage() {
         price,
         stock,
         category: formData.category,
-      }).eq('id', editingProductId).select().single();
+        image_url: uploadedImageUrl,
+      }).eq('id', editingProductId).select();
 
       if (error) {
         console.error('Gagal update produk:', error.message ?? error);
         setMessage('Gagal update produk. Coba lagi.');
-      } else if (data) {
-        setProducts(products.map(p => p.id === editingProductId ? data : p));
-        setFormData({ name: '', description: '', price: '', stock: '', category: 'roti' });
+      } else if (data && data.length > 0) {
+        setProducts(products.map(p => p.id === editingProductId ? data[0] : p));
+        setFormData({ name: '', description: '', price: '', stock: '', category: 'roti', image_url: '' });
+        setImageFile(null);
+        setImagePreview(null);
         setShowAddProduct(false);
         setIsEditing(false);
         setEditingProductId(null);
         setMessage('Produk berhasil diperbarui!');
         setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage('Gagal update produk. Pastikan pengaturan RLS (Row Level Security) untuk Update sudah aktif.');
       }
     } else {
       if (!supabase) return;
@@ -274,18 +312,23 @@ export default function SellerPage() {
         price,
         stock,
         category: formData.category,
+        image_url: uploadedImageUrl,
         available: true,
-      }]).select().single();
+      }]).select();
 
       if (error) {
         console.error('Gagal menyimpan produk:', error.message ?? error);
         setMessage('Gagal menyimpan produk. Coba lagi.');
-      } else if (data) {
-        setProducts((prev) => [data, ...prev]);
-        setFormData({ name: '', description: '', price: '', stock: '', category: 'roti' });
+      } else if (data && data.length > 0) {
+        setProducts((prev) => [data[0], ...prev]);
+        setFormData({ name: '', description: '', price: '', stock: '', category: 'roti', image_url: '' });
+        setImageFile(null);
+        setImagePreview(null);
         setShowAddProduct(false);
         setMessage('Produk berhasil ditambahkan ke etalase!');
         setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage('Gagal menyimpan produk. Pastikan pengaturan RLS (Row Level Security) untuk Insert sudah aktif.');
       }
     }
     setSubmitting(false);
@@ -575,7 +618,9 @@ export default function SellerPage() {
                 if (showAddProduct) {
                    setIsEditing(false);
                    setEditingProductId(null);
-                   setFormData({ name: '', description: '', price: '', stock: '', category: 'roti' });
+                   setFormData({ name: '', description: '', price: '', stock: '', category: 'roti', image_url: '' });
+                   setImageFile(null);
+                   setImagePreview(null);
                 }
               }}
               className="rounded-full bg-blue-500 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-400 flex items-center gap-2 hover:shadow-lg hover:shadow-blue-500/20"
@@ -597,6 +642,38 @@ export default function SellerPage() {
               <h3 className="text-lg font-bold text-white border-b border-white/5 pb-4">{isEditing ? 'Edit Rincian Barang' : 'Rincian Barang Baru'}</h3>
               
               <div className="grid gap-6 md:grid-cols-2">
+                <div className="md:col-span-2">
+                  <label className="block text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-2">Foto Produk (Opsional)</label>
+                  <div className="flex items-center gap-4">
+                    {imagePreview ? (
+                      <div className="relative w-24 h-24 rounded-2xl overflow-hidden border border-white/10 shrink-0">
+                        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                        <button type="button" onClick={() => { setImageFile(null); setImagePreview(null); setFormData({...formData, image_url: ''}); }} className="absolute top-1 right-1 bg-black/50 p-1 rounded-full text-white hover:bg-rose-500 transition-colors">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="w-24 h-24 rounded-2xl border border-dashed border-white/20 flex items-center justify-center text-slate-500 shrink-0 bg-black/20">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            setImageFile(e.target.files[0]);
+                            setImagePreview(URL.createObjectURL(e.target.files[0]));
+                          }
+                        }}
+                        className="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500/10 file:text-blue-400 hover:file:bg-blue-500/20 file:transition-colors cursor-pointer"
+                        disabled={submitting}
+                      />
+                      <p className="text-xs text-slate-500 mt-2">Maksimal ukuran 2MB. Format: JPG, PNG, WEBP.</p>
+                    </div>
+                  </div>
+                </div>
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-2">Nama Produk</label>
                   <input
@@ -665,7 +742,9 @@ export default function SellerPage() {
                      setShowAddProduct(false);
                      setIsEditing(false);
                      setEditingProductId(null);
-                     setFormData({ name: '', description: '', price: '', stock: '', category: 'roti' });
+                     setFormData({ name: '', description: '', price: '', stock: '', category: 'roti', image_url: '' });
+                     setImageFile(null);
+                     setImagePreview(null);
                   }}
                   className="rounded-full bg-white/5 border border-white/10 px-8 py-3 text-sm font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-colors"
                   disabled={submitting}
@@ -685,6 +764,11 @@ export default function SellerPage() {
             ) : (
               products.map((product) => (
                 <div key={product.id} className="group rounded-[1.5rem] border border-white/5 bg-white/[0.02] p-6 hover:bg-white/[0.04] hover:border-blue-500/30 transition-all flex flex-col h-full">
+                  {product.image_url && (
+                    <div className="w-full h-40 mb-4 rounded-xl overflow-hidden border border-white/5 shrink-0 bg-black/20">
+                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                    </div>
+                  )}
                   <div className="mb-4 flex-1">
                     <div className="flex justify-between items-start mb-2">
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest bg-blue-500/10 text-blue-400 border border-blue-500/20">
