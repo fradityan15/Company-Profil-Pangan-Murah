@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { getSupabase } from '@/lib/supabaseClient';
 import SearchBar from '@/components/SearchBar';
 
-export default async function LiveData({ searchParams }: { searchParams: Promise<{ query?: string }> }) {
+export default async function LiveData({ searchParams }: { searchParams: Promise<{ query?: string, category?: string }> }) {
   const params = await searchParams;
   const query = params?.query || '';
+  const category = params?.category || 'Semua';
   const supabase = getSupabase();
 
   // Query Supabase dengan filter .ilike() jika ada parameter pencarian
@@ -17,20 +18,34 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
   if (query) {
     supabaseQuery = supabaseQuery.ilike('name', `%${query}%`);
   }
+  
+  if (category !== 'Semua') {
+    supabaseQuery = supabaseQuery.eq('category', category);
+  }
 
   const { data, error } = await supabaseQuery;
 
   if (error) {
     console.error('Gagal memuat katalog dari Supabase:', error.message);
   }
+  const CATEGORY_MAP: Record<string, string> = {
+    'roti': 'Roti & Bakery',
+    'kue': 'Kue & Jajanan',
+    'camilan': 'Camilan Ringan',
+    'makanan': 'Makanan Berat / Lauk',
+    'Semua': 'Semua'
+  };
 
   const fallbackItems = [
-    { id: 1, name: 'Roti', description: 'Koleksi roti dan kue segar dari bakery ternama', price: 25000, stock: 10, category: 'Bakery', icon: '🥖' },
-    { id: 2, name: 'Nasi Box', description: 'Porsi nasi lengkap dengan lauk-pauk spesial', price: 15000, stock: 15, category: 'Restaurant', icon: '🍱' },
-    { id: 3, name: 'Buah Segar Mix', description: 'Paket buah-buahan organik siap santap', price: 12000, stock: 8, category: 'Fresh', icon: '🍎' },
+    { id: 1, name: 'Roti Tawar Premium', description: 'Koleksi roti dan kue segar dari bakery ternama', price: 25000, stock: 10, category: 'roti', icon: '🥖' },
+    { id: 2, name: 'Nasi Box', description: 'Porsi nasi lengkap dengan lauk-pauk spesial', price: 15000, stock: 15, category: 'makanan', icon: '🍱' },
+    { id: 3, name: 'Kue Basah Mix', description: 'Paket kue tradisional siap santap', price: 12000, stock: 8, category: 'kue', icon: '🥧' },
   ];
 
-  const items = data && data.length > 0 ? data : (query ? [] : fallbackItems);
+  const items = data && data.length > 0 ? data : (query ? (data || []) : fallbackItems.filter(item => category === 'Semua' || item.category === category));
+
+  // Selalu tampilkan semua opsi kategori agar konsisten dengan menu etalase produk
+  const availableCategories = ['Semua', 'roti', 'kue', 'camilan', 'makanan'];
 
   const formattedItems = items.map((item: any) => ({
     ...item,
@@ -61,11 +76,20 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
 
         {/* Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-3 mb-14">
-          {['Semua', 'Bakery', 'Restaurant', 'Fresh', 'Snacks'].map((filter, idx) => (
-            <button key={filter} className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border ${idx === 0 ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white hover:border-white/20'}`}>
-              {filter}
-            </button>
-          ))}
+          {availableCategories.map((filter) => {
+            const isActive = category === filter;
+            const targetParams = new URLSearchParams();
+            if (query) targetParams.set('query', query);
+            if (filter !== 'Semua') targetParams.set('category', filter);
+            const targetUrl = targetParams.toString() ? `?${targetParams.toString()}` : '/live-data';
+            const label = CATEGORY_MAP[filter] || filter;
+
+            return (
+              <Link key={filter} href={targetUrl} scroll={false} className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border ${isActive ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white hover:border-white/20'}`}>
+                {label}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Grid Kartu Makanan */}
@@ -75,10 +99,10 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
             
             // Map kategori ke gambar statis berkualitas tinggi
             const categoryImages: Record<string, string> = {
-              'Bakery': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=600&auto=format&fit=crop',
-              'Restaurant': 'https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=600&auto=format&fit=crop',
-              'Fresh': 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?q=80&w=600&auto=format&fit=crop',
-              'Snacks': 'https://images.unsplash.com/photo-1599490659213-e2b9527bd08c?q=80&w=600&auto=format&fit=crop',
+              'roti': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=600&auto=format&fit=crop',
+              'kue': 'https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?q=80&w=600&auto=format&fit=crop',
+              'makanan': 'https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=600&auto=format&fit=crop',
+              'camilan': 'https://images.unsplash.com/photo-1599490659213-e2b9527bd08c?q=80&w=600&auto=format&fit=crop',
             };
             
             const imageUrl = item.image_url || categoryImages[item.category] || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop';
@@ -132,7 +156,7 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
                 <div className="bg-black/20 rounded-xl p-3 border border-white/5">
                   <div className="flex items-center justify-between text-xs mb-2 uppercase tracking-widest">
                     <span className="font-bold text-slate-300">{item.stock ? `${item.stock} porsi tersedia` : 'Stok terbatas'}</span>
-                    <span className="text-slate-500">{item.category}</span>
+                    <span className="text-slate-500">{CATEGORY_MAP[item.category] || item.category}</span>
                   </div>
                   <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
                     <div 

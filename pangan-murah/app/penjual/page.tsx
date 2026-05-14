@@ -38,35 +38,7 @@ interface RescueLocation {
 export default function SellerPage() {
   const { user, isLoading } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
-  const [orders] = useState<Order[]>([
-    {
-      id: '1',
-      buyer_name: 'Budi Santoso',
-      product_name: 'Roti Tawar Premium',
-      quantity: 2,
-      total_price: 50000,
-      status: 'pending',
-      created_at: '2026-04-29T10:30:00Z',
-    },
-    {
-      id: '2',
-      buyer_name: 'Siti Nurhaliza',
-      product_name: 'Kue Coklat Mewah',
-      quantity: 1,
-      total_price: 45000,
-      status: 'accepted',
-      created_at: '2026-04-29T09:15:00Z',
-    },
-    {
-      id: '3',
-      buyer_name: 'Ahmad Wijaya',
-      product_name: 'Camilan Sehat Mix',
-      quantity: 3,
-      total_price: 105000,
-      status: 'completed',
-      created_at: '2026-04-28T14:45:00Z',
-    },
-  ]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
@@ -174,10 +146,52 @@ export default function SellerPage() {
       if (error) {
         console.error('Gagal memuat produk seller:', error.message);
       }
-      setProducts(data ?? []);
+      const fetchedProducts = data ?? [];
+      setProducts(fetchedProducts);
+
+      if (fetchedProducts.length > 0) {
+        const productIds = fetchedProducts.map(p => p.id);
+        const { data: ordersData, error: ordersError } = await supabase
+          .from('orders')
+          .select('*')
+          .in('product_id', productIds)
+          .order('created_at', { ascending: false });
+        
+        if (ordersError) {
+          console.error('Gagal memuat pesanan:', ordersError.message);
+        } else if (ordersData) {
+          const mappedOrders = ordersData.map(o => ({
+            id: o.id,
+            buyer_name: o.buyer_email,
+            product_name: o.product_name,
+            quantity: o.quantity,
+            total_price: o.total_price,
+            status: o.status,
+            created_at: o.created_at,
+          }));
+          setOrders(mappedOrders as Order[]);
+        }
+      }
     };
     fetchSellerProducts();
   }, [user]);
+
+  const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
+    if (!supabase) return;
+    const { error } = await supabase
+      .from('orders')
+      .update({ status: newStatus })
+      .eq('id', orderId);
+      
+    if (error) {
+      alert('Gagal mengupdate status pesanan: ' + error.message);
+      return;
+    }
+    
+    setOrders(prevOrders => 
+      prevOrders.map(o => o.id === orderId ? { ...o, status: newStatus as any } : o)
+    );
+  };
 
   const handleDeleteProduct = async (productId: string) => {
     if (!confirm('Apakah Anda yakin ingin menghapus produk ini?')) return;
@@ -714,7 +728,7 @@ export default function SellerPage() {
                   >
                     <option value="roti">Roti & Bakery</option>
                     <option value="kue">Kue & Jajanan</option>
-                    <option value="camilan">Camilan Ringan</option>
+                    <option value="camilan">Minuman</option>
                     <option value="makanan">Makanan Berat / Lauk</option>
                   </select>
                 </div>
@@ -849,15 +863,15 @@ export default function SellerPage() {
                     <td className="px-8 py-5 text-right">
                       {order.status === 'pending' ? (
                         <div className="flex items-center justify-end gap-2">
-                          <button className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 text-xs font-bold text-emerald-400 hover:bg-emerald-500/20 transition-colors">
+                          <button onClick={() => handleUpdateOrderStatus(order.id, 'accepted')} className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 text-xs font-bold text-emerald-400 hover:bg-emerald-500/20 transition-colors">
                             Terima
                           </button>
-                          <button className="rounded-lg bg-rose-500/10 border border-rose-500/20 px-3 py-1.5 text-xs font-bold text-rose-400 hover:bg-rose-500/20 transition-colors">
+                          <button onClick={() => handleUpdateOrderStatus(order.id, 'rejected')} className="rounded-lg bg-rose-500/10 border border-rose-500/20 px-3 py-1.5 text-xs font-bold text-rose-400 hover:bg-rose-500/20 transition-colors">
                             Tolak
                           </button>
                         </div>
                       ) : (
-                        <span className="text-xs text-slate-600 font-medium">Terkonfirmasi</span>
+                        <span className="text-xs text-slate-600 font-medium capitalize">{order.status}</span>
                       )}
                     </td>
                   </tr>

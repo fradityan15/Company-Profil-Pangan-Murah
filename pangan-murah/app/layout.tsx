@@ -6,7 +6,12 @@ import Header from '../components/Header'
 export const metadata = {
   title: 'Pangan Murah | Penyelamat Makanan Indonesia',
   description: 'Marketplace makanan surplus nomor 1 di Indonesia. Hemat uang, selamatkan bumi.',
-}
+  icons: {
+    icon: '/logo-saya.png',
+    shortcut: '/logo-saya.png',
+    apple: '/logo-saya.png',
+  },
+};
 
 export default function RootLayout({ 
   children 
