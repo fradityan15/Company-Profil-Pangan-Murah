@@ -31,7 +31,7 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
   const CATEGORY_MAP: Record<string, string> = {
     'roti': 'Roti & Bakery',
     'kue': 'Kue & Jajanan',
-    'camilan': 'Camilan Ringan',
+    'Minuman': 'Minuman',
     'makanan': 'Makanan Berat / Lauk',
     'Semua': 'Semua'
   };
@@ -45,7 +45,7 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
   const items = data && data.length > 0 ? data : (query ? (data || []) : fallbackItems.filter(item => category === 'Semua' || item.category === category));
 
   // Selalu tampilkan semua opsi kategori agar konsisten dengan menu etalase produk
-  const availableCategories = ['Semua', 'roti', 'kue', 'camilan', 'makanan'];
+  const availableCategories = ['Semua', 'roti', 'kue', 'Minuman', 'makanan'];
 
   const formattedItems = items.map((item: any) => ({
     ...item,
@@ -102,7 +102,7 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
               'roti': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=600&auto=format&fit=crop',
               'kue': 'https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?q=80&w=600&auto=format&fit=crop',
               'makanan': 'https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=600&auto=format&fit=crop',
-              'camilan': 'https://images.unsplash.com/photo-1599490659213-e2b9527bd08c?q=80&w=600&auto=format&fit=crop',
+              'Minuman': 'https://images.unsplash.com/photo-1599490659213-e2b9527bd08c?q=80&w=600&auto=format&fit=crop',
             };
             
             const imageUrl = item.image_url || categoryImages[item.category] || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop';

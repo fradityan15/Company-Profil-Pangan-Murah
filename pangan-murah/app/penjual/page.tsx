@@ -728,7 +728,7 @@ export default function SellerPage() {
                   >
                     <option value="roti">Roti & Bakery</option>
                     <option value="kue">Kue & Jajanan</option>
-                    <option value="camilan">Minuman</option>
+                    <option value="Minuman">Minuman</option>
                     <option value="makanan">Makanan Berat / Lauk</option>
                   </select>
                 </div>
