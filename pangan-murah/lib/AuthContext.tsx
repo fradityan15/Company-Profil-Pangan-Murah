@@ -29,6 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const storedUser = localStorage.getItem('pangan_user');
     if (storedUser) {
       try {
+        // eslint-disable-next-line
         setUser(JSON.parse(storedUser));
       } catch (err) {
         console.error('Failed to parse stored user:', err);

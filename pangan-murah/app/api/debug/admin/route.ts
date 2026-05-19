@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabaseClient';
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const supabase = getSupabase();
 
@@ -21,8 +21,8 @@ export async function GET(request: Request) {
       total: (data || []).length,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Debug admin error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ error: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 });
   }
 }

@@ -5,9 +5,18 @@ import { useAuth } from '@/lib/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 
+interface Transaction {
+  id: string;
+  created_at: string;
+  payment_status: string;
+  total_price: number;
+  product_name: string;
+  quantity: number;
+}
+
 export default function RiwayatPembelian() {
   const { user, loading: authLoading } = useAuth();
-  const [transactions, setTransactions] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 

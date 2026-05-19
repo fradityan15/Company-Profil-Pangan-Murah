@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server';
  * Middleware Global untuk memproteksi SELURUH fitur aplikasi.
  * Hanya mengizinkan akses ke halaman Login, Register, dan aset statis tanpa login.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const authSession = request.cookies.get('pangan_session');
 

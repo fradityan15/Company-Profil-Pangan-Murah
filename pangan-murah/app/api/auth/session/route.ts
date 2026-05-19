@@ -25,10 +25,10 @@ export async function GET(request: Request) {
         { status: 401 }
       );
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Check session error:', error);
     return NextResponse.json(
-      { error: error.message || 'Gagal mengecek sesi' },
+      { error: error instanceof Error ? error.message : 'Gagal mengecek sesi' },
       { status: 500 }
     );
   }

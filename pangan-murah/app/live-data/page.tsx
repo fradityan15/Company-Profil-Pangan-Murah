@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { getSupabase } from '@/lib/supabaseClient';
+
+export const runtime = 'edge';
 import SearchBar from '@/components/SearchBar';
 
 export default async function LiveData({ searchParams }: { searchParams: Promise<{ query?: string, category?: string }> }) {
@@ -47,9 +49,10 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
   // Selalu tampilkan semua opsi kategori agar konsisten dengan menu etalase produk
   const availableCategories = ['Semua', 'roti', 'kue', 'Minuman', 'makanan'];
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formattedItems = items.map((item: any) => ({
     ...item,
-    formattedPrice: new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.price),
+    formattedPrice: new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Number(item.price) || 0),
     icon: item.icon || '🍽',
     discount: 'TERBARU'
   }));
@@ -94,8 +97,8 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
 
         {/* Grid Kartu Makanan */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {formattedItems.map((item, index) => {
-            const stockPercentage = Math.min(100, ((item.stock || 0) / 20) * 100);
+          {formattedItems.map((item) => {
+            const stockPercentage = Math.min(100, ((Number(item.stock) || 0) / 20) * 100);
             
             // Map kategori ke gambar statis berkualitas tinggi
             const categoryImages: Record<string, string> = {
@@ -172,7 +175,7 @@ export default async function LiveData({ searchParams }: { searchParams: Promise
 
         {formattedItems.length === 0 && (
           <div className="py-20 text-center">
-            <p className="text-slate-500 text-lg">Tidak ada hasil ditemukan untuk "{query}"</p>
+            <p className="text-slate-500 text-lg">Tidak ada hasil ditemukan untuk &quot;{query}&quot;</p>
           </div>
         )}
 

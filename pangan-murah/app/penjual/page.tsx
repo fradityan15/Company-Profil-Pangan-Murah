@@ -178,6 +178,14 @@ export default function SellerPage() {
 
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
     if (!supabase) return;
+    
+    const previousOrders = [...orders];
+    
+    // Optimistic Update
+    setOrders(prevOrders => 
+      prevOrders.map(o => o.id === orderId ? { ...o, status: newStatus as Order['status'] } : o)
+    );
+
     const { error } = await supabase
       .from('orders')
       .update({ status: newStatus })
@@ -185,12 +193,9 @@ export default function SellerPage() {
       
     if (error) {
       alert('Gagal mengupdate status pesanan: ' + error.message);
-      return;
+      // Rollback on error
+      setOrders(previousOrders);
     }
-    
-    setOrders(prevOrders => 
-      prevOrders.map(o => o.id === orderId ? { ...o, status: newStatus as any } : o)
-    );
   };
 
   const handleDeleteProduct = async (productId: string) => {
@@ -661,6 +666,7 @@ export default function SellerPage() {
                   <div className="flex items-center gap-4">
                     {imagePreview ? (
                       <div className="relative w-24 h-24 rounded-2xl overflow-hidden border border-white/10 shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                         <button type="button" onClick={() => { setImageFile(null); setImagePreview(null); setFormData({...formData, image_url: ''}); }} className="absolute top-1 right-1 bg-black/50 p-1 rounded-full text-white hover:bg-rose-500 transition-colors">
                           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -780,6 +786,7 @@ export default function SellerPage() {
                 <div key={product.id} className="group rounded-[1.5rem] border border-white/5 bg-white/[0.02] p-6 hover:bg-white/[0.04] hover:border-blue-500/30 transition-all flex flex-col h-full">
                   {product.image_url && (
                     <div className="w-full h-40 mb-4 rounded-xl overflow-hidden border border-white/5 shrink-0 bg-black/20">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
                     </div>
                   )}

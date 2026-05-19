@@ -29,10 +29,10 @@ export async function POST(request: Request) {
     });
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Login error:', error);
     return NextResponse.json(
-      { error: error.message || 'Login gagal' },
+      { error: error instanceof Error ? error.message : 'Login gagal' },
       { status: 400 }
     );
   }

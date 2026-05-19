@@ -25,8 +25,8 @@ export default function AdminDebugPage() {
         }
         const data = await response.json();
         setAccounts(data.admin_accounts || []);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : String(err));
       } finally {
         setLoading(false);
       }

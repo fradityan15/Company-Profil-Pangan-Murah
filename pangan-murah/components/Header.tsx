@@ -44,6 +44,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto flex h-20 items-center justify-between gap-4 px-6">
         <Link href="/" className="text-2xl md:text-3xl font-black tracking-tighter text-white transition-all flex items-center group">
           <div className="relative w-14 h-14 md:w-20 md:h-20 flex items-center justify-center shrink-0 z-10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-saya.png" alt="Logo Pangan Murah" className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3" />
           </div>
           <span className="flex items-center leading-none -ml-4 md:-ml-6 pt-1 z-0">

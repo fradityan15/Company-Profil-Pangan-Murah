@@ -61,8 +61,8 @@ export default function AdminPage() {
 
       const data = await response.json();
       setUsers(data.users || []);
-    } catch (err: any) {
-      setError(err.message || 'Gagal memuat data admin');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Gagal memuat data admin');
     } finally {
       setLoadingUsers(false);
     }
@@ -70,6 +70,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (user?.role === 'admin') {
+      // eslint-disable-next-line
       fetchUsers();
     }
   }, [user?.role]);
@@ -89,8 +90,8 @@ export default function AdminPage() {
       }
 
       await fetchUsers();
-    } catch (err: any) {
-      setError(err.message || 'Gagal memperbarui role');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Gagal memperbarui role');
     }
   };
 
@@ -260,7 +261,8 @@ export default function AdminPage() {
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '12px', fontSize: '12px' }}
                     itemStyle={{ color: '#8b5cf6' }}
-                    formatter={(value: any) => [`Rp ${Number(value).toLocaleString('id-ID')}`, 'Total']}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    formatter={(value: any) => [`Rp ${Number(value || 0).toLocaleString('id-ID')}`, 'Total']}
                   />
                   <Bar dataKey="total" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
                 </BarChart>

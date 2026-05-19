@@ -34,6 +34,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     const urlProductId = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('productId') : null;
+    // eslint-disable-next-line
     setProductId(urlProductId);
   }, []);
 

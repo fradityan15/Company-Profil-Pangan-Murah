@@ -54,8 +54,8 @@ export default function RegisterPage() {
       setTimeout(() => {
         router.push('/');
       }, 2000);
-    } catch (err: any) {
-      setError(err.message || 'Registrasi gagal');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Registrasi gagal');
     } finally {
       setIsLoading(false);
     }

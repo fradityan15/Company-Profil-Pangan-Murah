@@ -1,12 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
 import { useState } from 'react';
 
 export default function LoginPage() {
-  const router = useRouter();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
@@ -46,8 +44,8 @@ export default function LoginPage() {
       } else {
         window.location.href = '/';
       }
-    } catch (err: any) {
-      setError(err.message || 'Login gagal');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Login gagal');
     } finally {
       setIsLoading(false);
     }
